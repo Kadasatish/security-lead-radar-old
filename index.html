@@ -2,7 +2,17 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+
+  <meta name="theme-color" content="#0b0f14">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+  <link rel="manifest" href="./manifest.json">
+
   <title>Security Lead Radar</title>
 
   <style>
@@ -10,22 +20,34 @@
       box-sizing: border-box;
     }
 
+    html {
+      background: #0b0f14;
+    }
+
     body {
       margin: 0;
+      min-height: 100vh;
       font-family: Arial, sans-serif;
       background: #0b0f14;
       color: #ffffff;
     }
 
-    .header {
-      padding: 22px 18px;
+    button {
+      font-family: inherit;
+    }
+
+    .app-header {
+      padding:
+        calc(18px + env(safe-area-inset-top))
+        18px
+        18px;
       background: #111821;
       border-bottom: 1px solid #26313d;
     }
 
-    .logo {
-      font-size: 24px;
-      font-weight: bold;
+    .brand {
+      font-size: 22px;
+      font-weight: 700;
     }
 
     .location {
@@ -36,6 +58,7 @@
 
     .container {
       padding: 18px;
+      padding-bottom: 100px;
     }
 
     .stats {
@@ -44,22 +67,22 @@
       gap: 12px;
     }
 
-    .stat {
+    .stat-card {
       background: #151c25;
       border: 1px solid #26313d;
-      border-radius: 14px;
-      padding: 18px;
+      border-radius: 15px;
+      padding: 17px;
     }
 
-    .number {
-      font-size: 28px;
-      font-weight: bold;
-      margin-bottom: 5px;
+    .stat-number {
+      font-size: 29px;
+      font-weight: 700;
     }
 
-    .label {
+    .stat-label {
+      margin-top: 5px;
       color: #9ca8b5;
-      font-size: 13px;
+      font-size: 12px;
     }
 
     .hot {
@@ -74,80 +97,193 @@
       color: #b8c2cc;
     }
 
-    .section-title {
-      margin: 28px 0 12px;
-      font-size: 19px;
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 28px;
+      margin-bottom: 12px;
     }
 
-    .empty {
+    .section-title {
+      font-size: 19px;
+      font-weight: 700;
+    }
+
+    .section-count {
+      color: #8e9aa7;
+      font-size: 13px;
+    }
+
+    .empty-card {
       background: #151c25;
       border: 1px dashed #354251;
-      border-radius: 14px;
+      border-radius: 15px;
       padding: 30px 18px;
       text-align: center;
       color: #8e9aa7;
     }
 
-    .add-btn {
+    .radar {
+      margin-top: 18px;
+      padding: 18px;
+      background: #111821;
+      border: 1px solid #26313d;
+      border-radius: 15px;
+    }
+
+    .radar-title {
+      font-size: 15px;
+      font-weight: 700;
+    }
+
+    .radar-text {
+      margin-top: 8px;
+      color: #9ca8b5;
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    .add-button {
       position: fixed;
-      right: 20px;
-      bottom: 24px;
-      border: none;
+      right: 18px;
+      bottom: calc(18px + env(safe-area-inset-bottom));
+      border: 0;
       border-radius: 50px;
-      padding: 16px 22px;
+      padding: 15px 20px;
       background: #ffffff;
       color: #000000;
       font-size: 15px;
-      font-weight: bold;
+      font-weight: 700;
+      box-shadow: 0 5px 20px rgba(0, 0, 0, 0.35);
+    }
+
+    .add-button:active {
+      transform: scale(0.97);
     }
   </style>
 </head>
 
 <body>
 
-  <header class="header">
-    <div class="logo">🛡️ Security Lead Radar</div>
+  <header class="app-header">
+    <div class="brand">🛡️ Security Lead Radar</div>
     <div class="location">📍 Kakinada</div>
   </header>
 
   <main class="container">
 
-    <div class="stats">
+    <section class="stats">
 
-      <div class="stat">
-        <div class="number hot">0</div>
-        <div class="label">🔥 HOT LEADS</div>
+      <div class="stat-card">
+        <div class="stat-number hot" id="hotCount">0</div>
+        <div class="stat-label">🔥 HOT LEADS</div>
       </div>
 
-      <div class="stat">
-        <div class="number warm">0</div>
-        <div class="label">🟡 WARM LEADS</div>
+      <div class="stat-card">
+        <div class="stat-number warm" id="warmCount">0</div>
+        <div class="stat-label">🟡 WARM LEADS</div>
       </div>
 
-      <div class="stat">
-        <div class="number watch">0</div>
-        <div class="label">⚪ WATCH</div>
+      <div class="stat-card">
+        <div class="stat-number watch" id="watchCount">0</div>
+        <div class="stat-label">⚪ WATCH</div>
       </div>
 
-      <div class="stat">
-        <div class="number">0</div>
-        <div class="label">📞 FOLLOW-UPS</div>
+      <div class="stat-card">
+        <div class="stat-number" id="followupCount">0</div>
+        <div class="stat-label">📞 FOLLOW-UPS</div>
       </div>
 
-    </div>
+    </section>
 
-    <div class="section-title">
-      Today's Fresh Leads
-    </div>
+    <section>
+      <div class="section-header">
+        <div class="section-title">Today's Fresh Leads</div>
+        <div class="section-count" id="totalCount">0 leads</div>
+      </div>
 
-    <div class="empty">
-      No leads yet.<br><br>
-      The system will show potential security opportunities here.
-    </div>
+      <div class="empty-card" id="emptyState">
+        No leads yet.
+
+        <br><br>
+
+        Security opportunities detected in Kakinada
+        will appear here.
+      </div>
+    </section>
+
+    <section class="radar">
+
+      <div class="radar-title">
+        📡 Kakinada Security Demand Radar
+      </div>
+
+      <div class="radar-text">
+        The system will identify public security-demand
+        signals, new businesses, openings, expansions,
+        and potential outsourced-security opportunities.
+      </div>
+
+    </section>
 
   </main>
 
-  <button class="add-btn">＋ Add Lead</button>
+  <button class="add-button" id="addLeadButton">
+    ＋ Add Lead
+  </button>
+
+  <script>
+    // PWA Service Worker
+    if ("serviceWorker" in navigator) {
+      window.addEventListener("load", () => {
+        navigator.serviceWorker.register("./sw.js")
+          .then(() => {
+            console.log("Security Lead Radar PWA ready");
+          })
+          .catch(error => {
+            console.log("Service Worker error:", error);
+          });
+      });
+    }
+
+    // Temporary dashboard data.
+    // Firestore will replace this later.
+    const leads = [];
+
+    function updateDashboard() {
+      const hot = leads.filter(
+        lead => lead.priority === "HOT"
+      ).length;
+
+      const warm = leads.filter(
+        lead => lead.priority === "WARM"
+      ).length;
+
+      const watch = leads.filter(
+        lead => lead.priority === "WATCH"
+      ).length;
+
+      const followups = leads.filter(
+        lead => lead.status === "FOLLOW_UP"
+      ).length;
+
+      document.getElementById("hotCount").textContent = hot;
+      document.getElementById("warmCount").textContent = warm;
+      document.getElementById("watchCount").textContent = watch;
+      document.getElementById("followupCount").textContent = followups;
+      document.getElementById("totalCount").textContent =
+        leads.length + (leads.length === 1 ? " lead" : " leads");
+    }
+
+    document
+      .getElementById("addLeadButton")
+      .addEventListener("click", () => {
+        alert("Lead entry will be added in the next version.");
+      });
+
+    updateDashboard();
+  </script>
 
 </body>
-  </html>
+</html>
