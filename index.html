@@ -1118,5 +1118,292 @@
           ? " lead"
           : " leads");
 
+      renderLeads(leads);
 
-      renderLea
+    }
+
+
+    /* =========================
+       RENDER LEADS
+    ========================== */
+
+    function renderLeads(leads) {
+
+      leadsContainer.innerHTML = "";
+
+      if (leads.length === 0) {
+
+        const empty = document.createElement("div");
+
+        empty.className = "empty-card";
+
+        empty.innerHTML =
+          "No leads yet.<br><br>" +
+          "Add your first security opportunity.";
+
+        leadsContainer.appendChild(empty);
+
+        return;
+      }
+
+
+      leads.forEach(lead => {
+
+        const card =
+          document.createElement("div");
+
+        card.className = "lead-card";
+
+
+        const top =
+          document.createElement("div");
+
+        top.className = "lead-top";
+
+
+        const name =
+          document.createElement("div");
+
+        name.className = "lead-name";
+
+        name.textContent =
+          lead.name || "Unnamed Lead";
+
+
+        const priority =
+          document.createElement("div");
+
+        priority.className =
+          "priority priority-" +
+          (lead.priority || "WATCH");
+
+        priority.textContent =
+          lead.priority || "WATCH";
+
+
+        top.appendChild(name);
+
+        top.appendChild(priority);
+
+
+        const detail =
+          document.createElement("div");
+
+        detail.className = "lead-detail";
+
+        detail.textContent =
+          "📍 " +
+          (lead.location || "Kakinada");
+
+
+        const notes =
+          document.createElement("div");
+
+        notes.className = "lead-detail";
+
+        notes.textContent =
+          lead.notes || "No notes";
+
+
+        const status =
+          document.createElement("div");
+
+        status.className = "lead-status";
+
+        status.textContent =
+          "Status: " +
+          (lead.status || "NEW");
+
+
+        card.appendChild(top);
+
+        card.appendChild(detail);
+
+        card.appendChild(notes);
+
+        card.appendChild(status);
+
+
+        leadsContainer.appendChild(card);
+
+      });
+
+    }
+
+
+    /* =========================
+       ADD LEAD MODAL
+    ========================== */
+
+    addLeadButton.addEventListener(
+      "click",
+      () => {
+
+        leadModal.classList.remove("hidden");
+
+      }
+    );
+
+
+    cancelLeadButton.addEventListener(
+      "click",
+      () => {
+
+        leadModal.classList.add("hidden");
+
+      }
+    );
+
+
+    leadModal.addEventListener(
+      "click",
+      event => {
+
+        if (event.target === leadModal) {
+
+          leadModal.classList.add("hidden");
+
+        }
+
+      }
+    );
+
+
+    /* =========================
+       SAVE LEAD
+    ========================== */
+
+    saveLeadButton.addEventListener(
+      "click",
+      async () => {
+
+        const leadName =
+          document.getElementById(
+            "leadName"
+          ).value.trim();
+
+
+        const leadLocation =
+          document.getElementById(
+            "leadLocation"
+          ).value.trim();
+
+
+        const leadPriority =
+          document.getElementById(
+            "leadPriority"
+          ).value;
+
+
+        const leadStatus =
+          document.getElementById(
+            "leadStatus"
+          ).value;
+
+
+        const leadNotes =
+          document.getElementById(
+            "leadNotes"
+          ).value.trim();
+
+
+        if (!leadName) {
+
+          appMessage.textContent =
+            "Enter business/company name.";
+
+          leadModal.classList.remove(
+            "hidden"
+          );
+
+          return;
+
+        }
+
+
+        saveLeadButton.disabled = true;
+
+        saveLeadButton.textContent =
+          "Saving...";
+
+
+        try {
+
+          await addDoc(
+            collection(db, "leads"),
+            {
+              name: leadName,
+              location:
+                leadLocation || "Kakinada",
+              priority: leadPriority,
+              status: leadStatus,
+              notes: leadNotes,
+              createdAt:
+                serverTimestamp()
+            }
+          );
+
+
+          document.getElementById(
+            "leadName"
+          ).value = "";
+
+
+          document.getElementById(
+            "leadLocation"
+          ).value = "";
+
+
+          document.getElementById(
+            "leadPriority"
+          ).value = "HOT";
+
+
+          document.getElementById(
+            "leadStatus"
+          ).value = "NEW";
+
+
+          document.getElementById(
+            "leadNotes"
+          ).value = "";
+
+
+          leadModal.classList.add(
+            "hidden"
+          );
+
+
+          appMessage.textContent =
+            "Lead saved successfully.";
+
+
+        } catch (error) {
+
+          console.error(
+            "Save lead error:",
+            error
+          );
+
+          appMessage.textContent =
+            "Could not save lead. Check Firestore Rules.";
+
+        } finally {
+
+          saveLeadButton.disabled =
+            false;
+
+          saveLeadButton.textContent =
+            "Save Lead";
+
+        }
+
+      }
+    );
+
+
+  </script>
+
+</body>
+</html>
+      
