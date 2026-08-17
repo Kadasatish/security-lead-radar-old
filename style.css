@@ -1,48 +1,389 @@
-      max-width: 430px;
-      max-height: 90vh;
-      overflow-y: auto;
-      background: #151c25;
-      border: 1px solid #354251;
-      border-radius: 20px;
-      padding: 20px;
-    }
+* {
+  box-sizing: border-box;
+}
 
-    .modal-title {
-      font-size: 20px;
-      font-weight: 700;
-      margin-bottom: 18px;
-    }
+html {
+  background: #0b0f14;
+}
 
-    .modal-buttons {
-      display: flex;
-      gap: 10px;
-      margin-top: 5px;
-    }
+body {
+  margin: 0;
+  min-height: 100vh;
+  font-family: Arial, sans-serif;
+  background: #0b0f14;
+  color: #ffffff;
+}
 
-    .save-button {
-      flex: 1;
-      padding: 13px;
-      border: 0;
-      border-radius: 10px;
-      background: #ffffff;
-      color: #000000;
-      font-weight: 700;
-    }
+button,
+input,
+select {
+  font-family: inherit;
+}
 
-    .cancel-button {
-      flex: 1;
-      padding: 13px;
-      border: 1px solid #354251;
-      border-radius: 10px;
-      background: transparent;
-      color: #ffffff;
-    }
+button {
+  cursor: pointer;
+}
 
-    .app-message {
-      text-align: center;
-      color: #9ca8b5;
-      font-size: 13px;
-      margin-top: 12px;
-      min-height: 18px;
-    }
+.hidden {
+  display: none !important;
+}
+
+/* =========================
+   LOGIN
+========================= */
+
+#loginScreen {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 22px;
+  background: #0b0f14;
+}
+
+.login-card {
+  width: 100%;
+  max-width: 420px;
+  background: #151c25;
+  border: 1px solid #26313d;
+  border-radius: 20px;
+  padding: 25px;
+  box-shadow: 0 10px 35px rgba(0,0,0,.35);
+}
+
+.login-logo {
+  text-align: center;
+  font-size: 42px;
+  margin-bottom: 10px;
+}
+
+.login-title {
+  text-align: center;
+  font-size: 24px;
+  font-weight: 700;
+}
+
+.login-subtitle {
+  text-align: center;
+  color: #9ca8b5;
+  font-size: 13px;
+  margin-top: 7px;
+  margin-bottom: 25px;
+}
+
+.input-label {
+  display: block;
+  color: #aeb8c3;
+  font-size: 13px;
+  margin-bottom: 7px;
+}
+
+.input {
+  width: 100%;
+  padding: 14px;
+  margin-bottom: 15px;
+  border: 1px solid #354251;
+  border-radius: 11px;
+  background: #0f151d;
+  color: #ffffff;
+  outline: none;
+  font-size: 15px;
+}
+
+.input:focus {
+  border-color: #ffffff;
+}
+
+.login-button {
+  width: 100%;
+  padding: 14px;
+  border: 0;
+  border-radius: 11px;
+  background: #ffffff;
+  color: #000000;
+  font-size: 15px;
+  font-weight: 700;
+  margin-top: 5px;
+}
+
+.register-button {
+  width: 100%;
+  padding: 13px;
+  border: 1px solid #354251;
+  border-radius: 11px;
+  background: transparent;
+  color: #ffffff;
+  font-size: 14px;
+  margin-top: 10px;
+}
+
+.login-message {
+  min-height: 20px;
+  text-align: center;
+  color: #ffb4b4;
+  font-size: 13px;
+  margin-top: 15px;
+}
+
+/* =========================
+   APP
+========================= */
+
+.app-header {
+  padding:
+    calc(18px + env(safe-area-inset-top))
+    18px
+    18px;
+  background: #111821;
+  border-bottom: 1px solid #26313d;
+}
+
+.header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+}
+
+.brand {
+  font-size: 21px;
+  font-weight: 700;
+}
+
+.location {
+  margin-top: 6px;
+  color: #9ca8b5;
+  font-size: 14px;
+}
+
+.logout-button {
+  border: 1px solid #354251;
+  border-radius: 9px;
+  padding: 9px 11px;
+  background: transparent;
+  color: #ffffff;
+  font-size: 12px;
+}
+
+.container {
+  padding: 18px;
+  padding-bottom: 110px;
+}
+
+.stats {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+}
+
+.stat-card {
+  background: #151c25;
+  border: 1px solid #26313d;
+  border-radius: 15px;
+  padding: 17px;
+}
+
+.stat-number {
+  font-size: 29px;
+  font-weight: 700;
+}
+
+.stat-label {
+  margin-top: 5px;
+  color: #9ca8b5;
+  font-size: 12px;
+}
+
+.hot {
+  color: #ff4d4d;
+}
+
+.warm {
+  color: #ffc44d;
+}
+
+.watch {
+  color: #b8c2cc;
+}
+
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 28px;
+  margin-bottom: 12px;
+}
+
+.section-title {
+  font-size: 19px;
+  font-weight: 700;
+}
+
+.section-count {
+  color: #8e9aa7;
+  font-size: 13px;
+}
+
+.empty-card {
+  background: #151c25;
+  border: 1px dashed #354251;
+  border-radius: 15px;
+  padding: 30px 18px;
+  text-align: center;
+  color: #8e9aa7;
+}
+
+.lead-card {
+  background: #151c25;
+  border: 1px solid #26313d;
+  border-radius: 15px;
+  padding: 16px;
+  margin-bottom: 12px;
+}
+
+.lead-top {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.lead-name {
+  font-size: 17px;
+  font-weight: 700;
+}
+
+.priority {
+  font-size: 11px;
+  font-weight: 700;
+  padding: 6px 9px;
+  border-radius: 20px;
+  white-space: nowrap;
+}
+
+.priority-HOT {
+  background: rgba(255,77,77,.15);
+  color: #ff4d4d;
+}
+
+.priority-WARM {
+  background: rgba(255,196,77,.15);
+  color: #ffc44d;
+}
+
+.priority-WATCH {
+  background: rgba(184,194,204,.15);
+  color: #b8c2cc;
+}
+
+.lead-detail {
+  color: #9ca8b5;
+  font-size: 13px;
+  margin-top: 8px;
+  line-height: 1.5;
+}
+
+.lead-status {
+  margin-top: 10px;
+  color: #ffffff;
+  font-size: 12px;
+}
+
+.radar {
+  margin-top: 18px;
+  padding: 18px;
+  background: #111821;
+  border: 1px solid #26313d;
+  border-radius: 15px;
+}
+
+.radar-title {
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.radar-text {
+  margin-top: 8px;
+  color: #9ca8b5;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.add-button {
+  position: fixed;
+  right: 18px;
+  bottom: calc(18px + env(safe-area-inset-bottom));
+  border: 0;
+  border-radius: 50px;
+  padding: 15px 20px;
+  background: #ffffff;
+  color: #000000;
+  font-size: 15px;
+  font-weight: 700;
+  box-shadow: 0 5px 20px rgba(0,0,0,.35);
+}
+
+/* =========================
+   MODAL
+========================= */
+
+.modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,.72);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 18px;
+  z-index: 100;
+}
+
+.modal-card {
+  width: 100%;
+  max-width: 430px;
+  max-height: 90vh;
+  overflow-y: auto;
+  background: #151c25;
+  border: 1px solid #354251;
+  border-radius: 20px;
+  padding: 20px;
+}
+
+.modal-title {
+  font-size: 20px;
+  font-weight: 700;
+  margin-bottom: 18px;
+}
+
+.modal-buttons {
+  display: flex;
+  gap: 10px;
+  margin-top: 5px;
+}
+
+.save-button {
+  flex: 1;
+  padding: 13px;
+  border: 0;
+  border-radius: 10px;
+  background: #ffffff;
+  color: #000000;
+  font-weight: 700;
+}
+
+.cancel-button {
+  flex: 1;
+  padding: 13px;
+  border: 1px solid #354251;
+  border-radius: 10px;
+  background: transparent;
+  color: #ffffff;
+}
+
+.app-message {
+  text-align: center;
+  color: #9ca8b5;
+  font-size: 13px;
+  margin-top: 12px;
+  min-height: 18px;
+}
   
