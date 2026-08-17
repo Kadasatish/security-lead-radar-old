@@ -1,1 +1,48 @@
+      max-width: 430px;
+      max-height: 90vh;
+      overflow-y: auto;
+      background: #151c25;
+      border: 1px solid #354251;
+      border-radius: 20px;
+      padding: 20px;
+    }
 
+    .modal-title {
+      font-size: 20px;
+      font-weight: 700;
+      margin-bottom: 18px;
+    }
+
+    .modal-buttons {
+      display: flex;
+      gap: 10px;
+      margin-top: 5px;
+    }
+
+    .save-button {
+      flex: 1;
+      padding: 13px;
+      border: 0;
+      border-radius: 10px;
+      background: #ffffff;
+      color: #000000;
+      font-weight: 700;
+    }
+
+    .cancel-button {
+      flex: 1;
+      padding: 13px;
+      border: 1px solid #354251;
+      border-radius: 10px;
+      background: transparent;
+      color: #ffffff;
+    }
+
+    .app-message {
+      text-align: center;
+      color: #9ca8b5;
+      font-size: 13px;
+      margin-top: 12px;
+      min-height: 18px;
+    }
+  
