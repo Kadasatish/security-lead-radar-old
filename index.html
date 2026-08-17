@@ -32,9 +32,120 @@
       color: #ffffff;
     }
 
-    button {
+    button,
+    input,
+    select {
       font-family: inherit;
     }
+
+    button {
+      cursor: pointer;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    /* =========================
+       LOGIN
+    ========================= */
+
+    #loginScreen {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 22px;
+      background: #0b0f14;
+    }
+
+    .login-card {
+      width: 100%;
+      max-width: 420px;
+      background: #151c25;
+      border: 1px solid #26313d;
+      border-radius: 20px;
+      padding: 25px;
+      box-shadow: 0 10px 35px rgba(0,0,0,.35);
+    }
+
+    .login-logo {
+      text-align: center;
+      font-size: 42px;
+      margin-bottom: 10px;
+    }
+
+    .login-title {
+      text-align: center;
+      font-size: 24px;
+      font-weight: 700;
+    }
+
+    .login-subtitle {
+      text-align: center;
+      color: #9ca8b5;
+      font-size: 13px;
+      margin-top: 7px;
+      margin-bottom: 25px;
+    }
+
+    .input-label {
+      display: block;
+      color: #aeb8c3;
+      font-size: 13px;
+      margin-bottom: 7px;
+    }
+
+    .input {
+      width: 100%;
+      padding: 14px;
+      margin-bottom: 15px;
+      border: 1px solid #354251;
+      border-radius: 11px;
+      background: #0f151d;
+      color: #ffffff;
+      outline: none;
+      font-size: 15px;
+    }
+
+    .input:focus {
+      border-color: #ffffff;
+    }
+
+    .login-button {
+      width: 100%;
+      padding: 14px;
+      border: 0;
+      border-radius: 11px;
+      background: #ffffff;
+      color: #000000;
+      font-size: 15px;
+      font-weight: 700;
+      margin-top: 5px;
+    }
+
+    .register-button {
+      width: 100%;
+      padding: 13px;
+      border: 1px solid #354251;
+      border-radius: 11px;
+      background: transparent;
+      color: #ffffff;
+      font-size: 14px;
+      margin-top: 10px;
+    }
+
+    .login-message {
+      min-height: 20px;
+      text-align: center;
+      color: #ffb4b4;
+      font-size: 13px;
+      margin-top: 15px;
+    }
+
+    /* =========================
+       APP
+    ========================= */
 
     .app-header {
       padding:
@@ -45,8 +156,15 @@
       border-bottom: 1px solid #26313d;
     }
 
+    .header-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+    }
+
     .brand {
-      font-size: 22px;
+      font-size: 21px;
       font-weight: 700;
     }
 
@@ -56,9 +174,18 @@
       font-size: 14px;
     }
 
+    .logout-button {
+      border: 1px solid #354251;
+      border-radius: 9px;
+      padding: 9px 11px;
+      background: transparent;
+      color: #ffffff;
+      font-size: 12px;
+    }
+
     .container {
       padding: 18px;
-      padding-bottom: 100px;
+      padding-bottom: 110px;
     }
 
     .stats {
@@ -124,6 +251,61 @@
       color: #8e9aa7;
     }
 
+    .lead-card {
+      background: #151c25;
+      border: 1px solid #26313d;
+      border-radius: 15px;
+      padding: 16px;
+      margin-bottom: 12px;
+    }
+
+    .lead-top {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .lead-name {
+      font-size: 17px;
+      font-weight: 700;
+    }
+
+    .priority {
+      font-size: 11px;
+      font-weight: 700;
+      padding: 6px 9px;
+      border-radius: 20px;
+      white-space: nowrap;
+    }
+
+    .priority-HOT {
+      background: rgba(255,77,77,.15);
+      color: #ff4d4d;
+    }
+
+    .priority-WARM {
+      background: rgba(255,196,77,.15);
+      color: #ffc44d;
+    }
+
+    .priority-WATCH {
+      background: rgba(184,194,204,.15);
+      color: #b8c2cc;
+    }
+
+    .lead-detail {
+      color: #9ca8b5;
+      font-size: 13px;
+      margin-top: 8px;
+      line-height: 1.5;
+    }
+
+    .lead-status {
+      margin-top: 10px;
+      color: #ffffff;
+      font-size: 12px;
+    }
+
     .radar {
       margin-top: 18px;
       padding: 18px;
@@ -155,135 +337,786 @@
       color: #000000;
       font-size: 15px;
       font-weight: 700;
-      box-shadow: 0 5px 20px rgba(0, 0, 0, 0.35);
+      box-shadow: 0 5px 20px rgba(0,0,0,.35);
     }
 
-    .add-button:active {
-      transform: scale(0.97);
+    /* =========================
+       MODAL
+    ========================= */
+
+    .modal {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,.72);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 18px;
+      z-index: 100;
+    }
+
+    .modal-card {
+      width: 100%;
+      max-width: 430px;
+      max-height: 90vh;
+      overflow-y: auto;
+      background: #151c25;
+      border: 1px solid #354251;
+      border-radius: 20px;
+      padding: 20px;
+    }
+
+    .modal-title {
+      font-size: 20px;
+      font-weight: 700;
+      margin-bottom: 18px;
+    }
+
+    .modal-buttons {
+      display: flex;
+      gap: 10px;
+      margin-top: 5px;
+    }
+
+    .save-button {
+      flex: 1;
+      padding: 13px;
+      border: 0;
+      border-radius: 10px;
+      background: #ffffff;
+      color: #000000;
+      font-weight: 700;
+    }
+
+    .cancel-button {
+      flex: 1;
+      padding: 13px;
+      border: 1px solid #354251;
+      border-radius: 10px;
+      background: transparent;
+      color: #ffffff;
+    }
+
+    .app-message {
+      text-align: center;
+      color: #9ca8b5;
+      font-size: 13px;
+      margin-top: 12px;
+      min-height: 18px;
     }
   </style>
 </head>
 
 <body>
 
-  <header class="app-header">
-    <div class="brand">🛡️ Security Lead Radar</div>
-    <div class="location">📍 Kakinada</div>
-  </header>
+  <!-- =========================
+       LOGIN SCREEN
+  ========================== -->
 
-  <main class="container">
+  <section id="loginScreen">
 
-    <section class="stats">
+    <div class="login-card">
 
-      <div class="stat-card">
-        <div class="stat-number hot" id="hotCount">0</div>
-        <div class="stat-label">🔥 HOT LEADS</div>
+      <div class="login-logo">🛡️</div>
+
+      <div class="login-title">
+        Security Lead Radar
       </div>
 
-      <div class="stat-card">
-        <div class="stat-number warm" id="warmCount">0</div>
-        <div class="stat-label">🟡 WARM LEADS</div>
+      <div class="login-subtitle">
+        Kakinada Security Intelligence Platform
       </div>
 
-      <div class="stat-card">
-        <div class="stat-number watch" id="watchCount">0</div>
-        <div class="stat-label">⚪ WATCH</div>
+      <label class="input-label">
+        Email
+      </label>
+
+      <input
+        id="emailInput"
+        class="input"
+        type="email"
+        placeholder="Enter email"
+        autocomplete="email"
+      >
+
+      <label class="input-label">
+        Password
+      </label>
+
+      <input
+        id="passwordInput"
+        class="input"
+        type="password"
+        placeholder="Enter password"
+        autocomplete="current-password"
+      >
+
+      <button
+        id="loginButton"
+        class="login-button">
+        Login
+      </button>
+
+      <button
+        id="registerButton"
+        class="register-button">
+        Create Test Account
+      </button>
+
+      <div
+        id="loginMessage"
+        class="login-message">
       </div>
 
-      <div class="stat-card">
-        <div class="stat-number" id="followupCount">0</div>
-        <div class="stat-label">📞 FOLLOW-UPS</div>
+    </div>
+
+  </section>
+
+
+  <!-- =========================
+       MAIN APP
+  ========================== -->
+
+  <section id="appScreen" class="hidden">
+
+    <header class="app-header">
+
+      <div class="header-row">
+
+        <div>
+          <div class="brand">
+            🛡️ Security Lead Radar
+          </div>
+
+          <div class="location">
+            📍 Kakinada
+          </div>
+        </div>
+
+        <button
+          id="logoutButton"
+          class="logout-button">
+          Logout
+        </button>
+
       </div>
 
-    </section>
+    </header>
 
-    <section>
-      <div class="section-header">
-        <div class="section-title">Today's Fresh Leads</div>
-        <div class="section-count" id="totalCount">0 leads</div>
+
+    <main class="container">
+
+      <!-- STATS -->
+
+      <section class="stats">
+
+        <div class="stat-card">
+          <div
+            class="stat-number hot"
+            id="hotCount">
+            0
+          </div>
+
+          <div class="stat-label">
+            🔥 HOT LEADS
+          </div>
+        </div>
+
+
+        <div class="stat-card">
+          <div
+            class="stat-number warm"
+            id="warmCount">
+            0
+          </div>
+
+          <div class="stat-label">
+            🟡 WARM LEADS
+          </div>
+        </div>
+
+
+        <div class="stat-card">
+          <div
+            class="stat-number watch"
+            id="watchCount">
+            0
+          </div>
+
+          <div class="stat-label">
+            ⚪ WATCH
+          </div>
+        </div>
+
+
+        <div class="stat-card">
+          <div
+            class="stat-number"
+            id="followupCount">
+            0
+          </div>
+
+          <div class="stat-label">
+            📞 FOLLOW-UPS
+          </div>
+        </div>
+
+      </section>
+
+
+      <!-- LEADS -->
+
+      <section>
+
+        <div class="section-header">
+
+          <div class="section-title">
+            Today's Fresh Leads
+          </div>
+
+          <div
+            class="section-count"
+            id="totalCount">
+            0 leads
+          </div>
+
+        </div>
+
+
+        <div id="leadsContainer">
+
+          <div
+            class="empty-card"
+            id="emptyState">
+
+            No leads yet.
+
+            <br><br>
+
+            Add your first security opportunity.
+
+          </div>
+
+        </div>
+
+      </section>
+
+
+      <!-- RADAR -->
+
+      <section class="radar">
+
+        <div class="radar-title">
+          📡 Kakinada Security Demand Radar
+        </div>
+
+        <div class="radar-text">
+          The system will identify public
+          security-demand signals, new businesses,
+          openings, expansions, and potential
+          outsourced-security opportunities.
+        </div>
+
+      </section>
+
+      <div
+        id="appMessage"
+        class="app-message">
       </div>
 
-      <div class="empty-card" id="emptyState">
-        No leads yet.
+    </main>
 
-        <br><br>
 
-        Security opportunities detected in Kakinada
-        will appear here.
+    <button
+      id="addLeadButton"
+      class="add-button">
+      ＋ Add Lead
+    </button>
+
+  </section>
+
+
+  <!-- =========================
+       ADD LEAD MODAL
+  ========================== -->
+
+  <div
+    id="leadModal"
+    class="modal hidden">
+
+    <div class="modal-card">
+
+      <div class="modal-title">
+        ＋ Add Security Lead
       </div>
-    </section>
 
-    <section class="radar">
 
-      <div class="radar-title">
-        📡 Kakinada Security Demand Radar
+      <label class="input-label">
+        Business / Company
+      </label>
+
+      <input
+        id="leadName"
+        class="input"
+        type="text"
+        placeholder="Example: New Hotel">
+
+
+      <label class="input-label">
+        Location
+      </label>
+
+      <input
+        id="leadLocation"
+        class="input"
+        type="text"
+        placeholder="Example: Kakinada">
+
+
+      <label class="input-label">
+        Priority
+      </label>
+
+      <select
+        id="leadPriority"
+        class="input">
+
+        <option value="HOT">
+          🔥 HOT
+        </option>
+
+        <option value="WARM">
+          🟡 WARM
+        </option>
+
+        <option value="WATCH">
+          ⚪ WATCH
+        </option>
+
+      </select>
+
+
+      <label class="input-label">
+        Status
+      </label>
+
+      <select
+        id="leadStatus"
+        class="input">
+
+        <option value="NEW">
+          NEW
+        </option>
+
+        <option value="FOLLOW_UP">
+          FOLLOW_UP
+        </option>
+
+        <option value="CONTACTED">
+          CONTACTED
+        </option>
+
+      </select>
+
+
+      <label class="input-label">
+        Notes
+      </label>
+
+      <input
+        id="leadNotes"
+        class="input"
+        type="text"
+        placeholder="Security requirement details">
+
+
+      <div class="modal-buttons">
+
+        <button
+          id="cancelLeadButton"
+          class="cancel-button">
+          Cancel
+        </button>
+
+        <button
+          id="saveLeadButton"
+          class="save-button">
+          Save Lead
+        </button>
+
       </div>
 
-      <div class="radar-text">
-        The system will identify public security-demand
-        signals, new businesses, openings, expansions,
-        and potential outsourced-security opportunities.
-      </div>
+    </div>
 
-    </section>
+  </div>
 
-  </main>
 
-  <button class="add-button" id="addLeadButton">
-    ＋ Add Lead
-  </button>
+  <!-- =========================
+       FIREBASE + APP JAVASCRIPT
+  ========================== -->
 
-  <script>
-    // PWA Service Worker
-    if ("serviceWorker" in navigator) {
-      window.addEventListener("load", () => {
-        navigator.serviceWorker.register("./sw.js")
-          .then(() => {
-            console.log("Security Lead Radar PWA ready");
-          })
-          .catch(error => {
-            console.log("Service Worker error:", error);
-          });
-      });
+  <script type="module">
+
+    import {
+      auth,
+      db
+    } from "./firebase.js";
+
+    import {
+      onAuthStateChanged,
+      signInWithEmailAndPassword,
+      createUserWithEmailAndPassword,
+      signOut
+    } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js";
+
+    import {
+      collection,
+      addDoc,
+      query,
+      orderBy,
+      onSnapshot,
+      serverTimestamp
+    } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
+
+
+    /* =========================
+       ELEMENTS
+    ========================== */
+
+    const loginScreen =
+      document.getElementById("loginScreen");
+
+    const appScreen =
+      document.getElementById("appScreen");
+
+    const emailInput =
+      document.getElementById("emailInput");
+
+    const passwordInput =
+      document.getElementById("passwordInput");
+
+    const loginButton =
+      document.getElementById("loginButton");
+
+    const registerButton =
+      document.getElementById("registerButton");
+
+    const logoutButton =
+      document.getElementById("logoutButton");
+
+    const loginMessage =
+      document.getElementById("loginMessage");
+
+    const appMessage =
+      document.getElementById("appMessage");
+
+    const leadModal =
+      document.getElementById("leadModal");
+
+    const addLeadButton =
+      document.getElementById("addLeadButton");
+
+    const cancelLeadButton =
+      document.getElementById("cancelLeadButton");
+
+    const saveLeadButton =
+      document.getElementById("saveLeadButton");
+
+    const leadsContainer =
+      document.getElementById("leadsContainer");
+
+
+    /* =========================
+       AUTH
+    ========================== */
+
+    loginButton.addEventListener(
+      "click",
+      async () => {
+
+        const email =
+          emailInput.value.trim();
+
+        const password =
+          passwordInput.value;
+
+        if (!email || !password) {
+
+          loginMessage.textContent =
+            "Enter email and password.";
+
+          return;
+        }
+
+        loginMessage.textContent =
+          "Logging in...";
+
+        try {
+
+          await signInWithEmailAndPassword(
+            auth,
+            email,
+            password
+          );
+
+          loginMessage.textContent = "";
+
+        } catch (error) {
+
+          console.error(error);
+
+          loginMessage.textContent =
+            getAuthError(error);
+
+        }
+
+      }
+    );
+
+
+    registerButton.addEventListener(
+      "click",
+      async () => {
+
+        const email =
+          emailInput.value.trim();
+
+        const password =
+          passwordInput.value;
+
+        if (!email || !password) {
+
+          loginMessage.textContent =
+            "Enter email and password first.";
+
+          return;
+        }
+
+        if (password.length < 6) {
+
+          loginMessage.textContent =
+            "Password must be at least 6 characters.";
+
+          return;
+        }
+
+        loginMessage.textContent =
+          "Creating account...";
+
+        try {
+
+          await createUserWithEmailAndPassword(
+            auth,
+            email,
+            password
+          );
+
+          loginMessage.textContent =
+            "Account created successfully.";
+
+        } catch (error) {
+
+          console.error(error);
+
+          loginMessage.textContent =
+            getAuthError(error);
+
+        }
+
+      }
+    );
+
+
+    logoutButton.addEventListener(
+      "click",
+      async () => {
+
+        await signOut(auth);
+
+      }
+    );
+
+
+    function getAuthError(error) {
+
+      switch (error.code) {
+
+        case "auth/invalid-credential":
+          return "Invalid email or password.";
+
+        case "auth/email-already-in-use":
+          return "This email is already registered.";
+
+        case "auth/invalid-email":
+          return "Invalid email address.";
+
+        case "auth/weak-password":
+          return "Password is too weak.";
+
+        case "auth/network-request-failed":
+          return "Network error. Check internet.";
+
+        default:
+          return error.message || "Authentication error.";
+
+      }
+
     }
 
-    // Temporary dashboard data.
-    // Firestore will replace this later.
-    const leads = [];
 
-    function updateDashboard() {
-      const hot = leads.filter(
-        lead => lead.priority === "HOT"
-      ).length;
+    /* =========================
+       AUTH STATE
+    ========================== */
 
-      const warm = leads.filter(
-        lead => lead.priority === "WARM"
-      ).length;
+    let unsubscribeLeads = null;
 
-      const watch = leads.filter(
-        lead => lead.priority === "WATCH"
-      ).length;
+    onAuthStateChanged(
+      auth,
+      user => {
 
-      const followups = leads.filter(
-        lead => lead.status === "FOLLOW_UP"
-      ).length;
+        if (user) {
 
-      document.getElementById("hotCount").textContent = hot;
-      document.getElementById("warmCount").textContent = warm;
-      document.getElementById("watchCount").textContent = watch;
-      document.getElementById("followupCount").textContent = followups;
-      document.getElementById("totalCount").textContent =
-        leads.length + (leads.length === 1 ? " lead" : " leads");
+          loginScreen.classList.add("hidden");
+
+          appScreen.classList.remove("hidden");
+
+          startFirestoreListener();
+
+        } else {
+
+          appScreen.classList.add("hidden");
+
+          loginScreen.classList.remove("hidden");
+
+          if (unsubscribeLeads) {
+
+            unsubscribeLeads();
+
+            unsubscribeLeads = null;
+
+          }
+
+        }
+
+      }
+    );
+
+
+    /* =========================
+       FIRESTORE
+    ========================== */
+
+    function startFirestoreListener() {
+
+      if (unsubscribeLeads) {
+
+        unsubscribeLeads();
+
+      }
+
+      const leadsRef =
+        collection(db, "leads");
+
+      const leadsQuery =
+        query(
+          leadsRef,
+          orderBy("createdAt", "desc")
+        );
+
+
+      unsubscribeLeads =
+        onSnapshot(
+          leadsQuery,
+
+          snapshot => {
+
+            const leads = [];
+
+            snapshot.forEach(
+              documentSnapshot => {
+
+                leads.push({
+                  id: documentSnapshot.id,
+                  ...documentSnapshot.data()
+                });
+
+              }
+            );
+
+            updateDashboard(leads);
+
+          },
+
+          error => {
+
+            console.error(
+              "Firestore error:",
+              error
+            );
+
+            appMessage.textContent =
+              "Firestore access error. Check Firebase Rules.";
+
+          }
+        );
+
     }
 
-    document
-      .getElementById("addLeadButton")
-      .addEventListener("click", () => {
-        alert("Lead entry will be added in the next version.");
-      });
 
-    updateDashboard();
-  </script>
+    /* =========================
+       DASHBOARD
+    ========================== */
 
-</body>
-</html>
+    function updateDashboard(leads) {
+
+      const hot =
+        leads.filter(
+          lead => lead.priority === "HOT"
+        ).length;
+
+      const warm =
+        leads.filter(
+          lead => lead.priority === "WARM"
+        ).length;
+
+      const watch =
+        leads.filter(
+          lead => lead.priority === "WATCH"
+        ).length;
+
+      const followups =
+        leads.filter(
+          lead => lead.status === "FOLLOW_UP"
+        ).length;
+
+
+      document.getElementById(
+        "hotCount"
+      ).textContent = hot;
+
+
+      document.getElementById(
+        "warmCount"
+      ).textContent = warm;
+
+
+      document.getElementById(
+        "watchCount"
+      ).textContent = watch;
+
+
+      document.getElementById(
+        "followupCount"
+      ).textContent = followups;
+
+
+      document.getElementById(
+        "totalCount"
+      ).textContent =
+        leads.length +
+        (leads.length === 1
+          ? " lead"
+          : " leads");
+
+
+      renderLea
