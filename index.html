@@ -1361,132 +1361,108 @@ card.appendChild(actions);
     ========================== */
 
     saveLeadButton.addEventListener(
-      "click",
-      async () => {
+  "click",
+  async () => {
 
-        const leadName =
-          document.getElementById(
-            "leadName"
-          ).value.trim();
+    const leadName =
+      document.getElementById("leadName").value.trim();
 
+    const leadLocation =
+      document.getElementById("leadLocation").value.trim();
 
-        const leadLocation =
-          document.getElementById(
-            "leadLocation"
-          ).value.trim();
+    const leadPriority =
+      document.getElementById("leadPriority").value;
 
+    const leadStatus =
+      document.getElementById("leadStatus").value;
 
-        const leadPriority =
-          document.getElementById(
-            "leadPriority"
-          ).value;
+    const leadNotes =
+      document.getElementById("leadNotes").value.trim();
 
+    if (!leadName) {
 
-        const leadStatus =
-          document.getElementById(
-            "leadStatus"
-          ).value;
+      appMessage.textContent =
+        "Enter business/company name.";
 
+      return;
+    }
 
-        const leadNotes =
-          document.getElementById(
-            "leadNotes"
-          ).value.trim();
+    saveLeadButton.disabled = true;
+    saveLeadButton.textContent = "Saving...";
 
+    try {
 
-        if (!leadName) {
+      const editId =
+        leadModal.dataset.editId;
 
-          appMessage.textContent =
-            "Enter business/company name.";
+      if (editId) {
 
-          leadModal.classList.remove(
-            "hidden"
-          );
+        await updateDoc(
+          doc(db, "leads", editId),
+          {
+            name: leadName,
+            location: leadLocation || "Kakinada",
+            priority: leadPriority,
+            status: leadStatus,
+            notes: leadNotes
+          }
+        );
 
-          return;
+        appMessage.textContent =
+          "Lead updated successfully.";
 
-        }
+      } else {
 
+        await addDoc(
+          collection(db, "leads"),
+          {
+            name: leadName,
+            location: leadLocation || "Kakinada",
+            priority: leadPriority,
+            status: leadStatus,
+            notes: leadNotes,
+            createdAt: serverTimestamp()
+          }
+        );
 
-        saveLeadButton.disabled = true;
-
-        saveLeadButton.textContent =
-          "Saving...";
-
-
-        try {
-
-          await addDoc(
-            collection(db, "leads"),
-            {
-              name: leadName,
-              location:
-                leadLocation || "Kakinada",
-              priority: leadPriority,
-              status: leadStatus,
-              notes: leadNotes,
-              createdAt:
-                serverTimestamp()
-            }
-          );
-
-
-          document.getElementById(
-            "leadName"
-          ).value = "";
-
-
-          document.getElementById(
-            "leadLocation"
-          ).value = "";
-
-
-          document.getElementById(
-            "leadPriority"
-          ).value = "HOT";
-
-
-          document.getElementById(
-            "leadStatus"
-          ).value = "NEW";
-
-
-          document.getElementById(
-            "leadNotes"
-          ).value = "";
-
-
-          leadModal.classList.add(
-            "hidden"
-          );
-
-
-          appMessage.textContent =
-            "Lead saved successfully.";
-
-
-        } catch (error) {
-
-          console.error(
-            "Save lead error:",
-            error
-          );
-
-          appMessage.textContent =
-            "Could not save lead. Check Firestore Rules.";
-
-        } finally {
-
-          saveLeadButton.disabled =
-            false;
-
-          saveLeadButton.textContent =
-            "Save Lead";
-
-        }
-
+        appMessage.textContent =
+          "Lead saved successfully.";
       }
-    );
+
+      document.getElementById("leadName").value = "";
+
+      document.getElementById("leadLocation").value = "";
+
+      document.getElementById("leadPriority").value = "HOT";
+
+      document.getElementById("leadStatus").value = "NEW";
+
+      document.getElementById("leadNotes").value = "";
+
+      delete leadModal.dataset.editId;
+
+      leadModal.classList.add("hidden");
+
+    } catch (error) {
+
+      console.error(
+        "Save lead error:",
+        error
+      );
+
+      appMessage.textContent =
+        "Could not save lead. Check Firestore Rules.";
+
+    } finally {
+
+      saveLeadButton.disabled = false;
+
+      saveLeadButton.textContent =
+        "Save Lead";
+    }
+
+  }
+);
 
 
   </script>
