@@ -1284,10 +1284,10 @@ deleteButton.addEventListener("click", async () => {
 
   try {
 
-    await deleteDoc(
-      collection(db, "leads"),
-      lead.id
-    );
+
+await deleteDoc(
+  doc(db, "leads", lead.id)
+);
 
     appMessage.textContent =
       "Lead deleted successfully.";
