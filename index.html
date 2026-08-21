@@ -37,46 +37,37 @@
         Kakinada Security Intelligence Platform
       </div>
 
-      <label class="input-label">
-        Email
-      </label>
+      <div class="input-group">
+        <label class="input-label">Email</label>
+        <input
+          id="emailInput"
+          class="input"
+          type="email"
+          placeholder="Enter email"
+          autocomplete="email"
+        >
+      </div>
 
-      <input
-        id="emailInput"
-        class="input"
-        type="email"
-        placeholder="Enter email"
-        autocomplete="email"
-      >
+      <div class="input-group">
+        <label class="input-label">Password</label>
+        <input
+          id="passwordInput"
+          class="input"
+          type="password"
+          placeholder="Enter password"
+          autocomplete="current-password"
+        >
+      </div>
 
-      <label class="input-label">
-        Password
-      </label>
-
-      <input
-        id="passwordInput"
-        class="input"
-        type="password"
-        placeholder="Enter password"
-        autocomplete="current-password"
-      >
-
-      <button
-        id="loginButton"
-        class="login-button">
+      <button id="loginButton" class="btn-primary">
         Login
       </button>
 
-      <button
-        id="registerButton"
-        class="register-button">
+      <button id="registerButton" class="btn-secondary">
         Create Test Account
       </button>
 
-      <div
-        id="loginMessage"
-        class="login-message">
-      </div>
+      <div id="loginMessage" class="login-message"></div>
 
     </div>
 
@@ -84,7 +75,7 @@
 
 
   <!-- =========================
-       MAIN APP
+       MAIN APP SCREEN
   ========================== -->
 
   <section id="appScreen" class="hidden">
@@ -97,16 +88,11 @@
           <div class="brand">
             🛡️ Security Lead Radar
           </div>
-          <div style="font-size: 12px; color: #ffc44d; margin-top: 4px;">Welcome — Jules Development Preview Test</div>
-
-          <div class="location">
-            📍 Kakinada
-          </div>
+          <div class="sub-banner">Welcome — Jules Development Preview Test</div>
+          <div class="location">📍 Kakinada Intelligence Hub</div>
         </div>
 
-        <button
-          id="logoutButton"
-          class="logout-button">
+        <button id="logoutButton" class="logout-button">
           Logout
         </button>
 
@@ -117,130 +103,110 @@
 
     <main class="container">
 
-      <!-- STATS -->
+      <!-- DASHBOARD LIVE STATS -->
 
-      <section class="stats">
+      <section class="stats-grid">
 
         <div class="stat-card">
-          <div
-            class="stat-number hot"
-            id="hotCount">
-            0
-          </div>
-
-          <div class="stat-label">
-            🔥 HOT LEADS
-          </div>
+          <div class="stat-number" id="activeCount">0</div>
+          <div class="stat-label">Active Leads</div>
         </div>
 
-
         <div class="stat-card">
-          <div
-            class="stat-number warm"
-            id="warmCount">
-            0
-          </div>
-
-          <div class="stat-label">
-            🟡 WARM LEADS
-          </div>
+          <div class="stat-number stat-hot" id="hotCount">0</div>
+          <div class="stat-label">🔥 Hot Leads</div>
         </div>
 
-
         <div class="stat-card">
-          <div
-            class="stat-number watch"
-            id="watchCount">
-            0
-          </div>
-
-          <div class="stat-label">
-            ⚪ WATCH
-          </div>
+          <div class="stat-number stat-warm" id="warmCount">0</div>
+          <div class="stat-label">🟡 Warm Leads</div>
         </div>
 
+        <div class="stat-card">
+          <div class="stat-number stat-watch" id="watchCount">0</div>
+          <div class="stat-label">⚪ Watch</div>
+        </div>
 
         <div class="stat-card">
-          <div
-            class="stat-number"
-            id="followupCount">
-            0
-          </div>
+          <div class="stat-number stat-due" id="dueCount">0</div>
+          <div class="stat-label">📅 Follow-ups Due</div>
+        </div>
 
-          <div class="stat-label">
-            📞 FOLLOW-UPS
-          </div>
+        <div class="stat-card">
+          <div class="stat-number stat-guards" id="guardsCount">0</div>
+          <div class="stat-label">🛡️ Guards Needed</div>
         </div>
 
       </section>
 
 
-      <!-- LEADS -->
+      <!-- SEARCH & FILTER TOOLBAR -->
+
+      <section class="filter-section">
+
+        <div class="search-box">
+          <span class="search-icon">🔍</span>
+          <input
+            id="searchInput"
+            class="search-input"
+            type="text"
+            placeholder="Search business, location or contact..."
+          >
+        </div>
+
+        <div class="filter-row">
+
+          <button class="filter-pill active" data-priority="ALL">All Priority</button>
+          <button class="filter-pill" data-priority="HOT">🔥 HOT</button>
+          <button class="filter-pill" data-priority="WARM">🟡 WARM</button>
+          <button class="filter-pill" data-priority="WATCH">⚪ WATCH</button>
+
+          <select id="statusFilter" class="filter-select">
+            <option value="ALL">All Statuses</option>
+            <option value="NEW">New</option>
+            <option value="CONTACTED">Contacted</option>
+            <option value="FOLLOW_UP">Follow-Up</option>
+            <option value="CONVERTED">Converted</option>
+            <option value="LOST">Lost</option>
+          </select>
+
+          <button id="dueOnlyToggle" class="filter-pill">
+            ⚠️ Due Only
+          </button>
+
+        </div>
+
+      </section>
+
+
+      <!-- LEADS LIST -->
 
       <section>
 
         <div class="section-header">
-
           <div class="section-title">
-            Today's Fresh Leads
+            Security Opportunities
           </div>
 
-          <div
-            class="section-count"
-            id="totalCount">
+          <div class="section-count" id="totalCount">
             0 leads
           </div>
-
         </div>
-
 
         <div id="leadsContainer">
-
-          <div
-            class="empty-card"
-            id="emptyState">
-
-            No leads yet.
-
-            <br><br>
-
-            Add your first security opportunity.
-
+          <div class="empty-card" id="emptyState">
+            Loading opportunities...
           </div>
-
         </div>
 
       </section>
 
-
-      <!-- RADAR -->
-
-      <section class="radar">
-
-        <div class="radar-title">
-          📡 Kakinada Security Demand Radar
-        </div>
-
-        <div class="radar-text">
-          The system will identify public
-          security-demand signals, new businesses,
-          openings, expansions, and potential
-          outsourced-security opportunities.
-        </div>
-
-      </section>
-
-      <div
-        id="appMessage"
-        class="app-message">
-      </div>
+      <div id="appMessage" class="app-message"></div>
 
     </main>
 
 
-    <button
-      id="addLeadButton"
-      class="add-button">
+    <button id="addLeadButton" class="add-button">
       ＋ Add Lead
     </button>
 
@@ -248,113 +214,104 @@
 
 
   <!-- =========================
-       ADD LEAD MODAL
+       ADD / EDIT LEAD MODAL
   ========================== -->
 
-  <div
-    id="leadModal"
-    class="modal hidden">
+  <div id="leadModal" class="modal hidden">
 
     <div class="modal-card">
 
-      <div class="modal-title">
-        ＋ Add Security Lead
+      <div class="modal-title" id="leadModalTitle">
+        ＋ Security Opportunity
       </div>
 
+      <div class="form-grid">
 
-      <label class="input-label">
-        Business / Company
-      </label>
+        <div class="input-group full-width">
+          <label class="input-label">Business / Establishment Name *</label>
+          <input id="leadName" class="input" type="text" placeholder="e.g. Royal Grand Hotel">
+        </div>
 
-      <input
-        id="leadName"
-        class="input"
-        type="text"
-        placeholder="Example: New Hotel">
+        <div class="input-group">
+          <label class="input-label">Location</label>
+          <input id="leadLocation" class="input" type="text" placeholder="e.g. Kakinada Main Road">
+        </div>
 
+        <div class="input-group">
+          <label class="input-label">Contact Person</label>
+          <input id="leadContactPerson" class="input" type="text" placeholder="e.g. Mr. Sharma (Manager)">
+        </div>
 
-      <label class="input-label">
-        Location
-      </label>
+        <div class="input-group">
+          <label class="input-label">Phone Number</label>
+          <input id="leadPhone" class="input" type="tel" placeholder="e.g. 9876543210">
+        </div>
 
-      <input
-        id="leadLocation"
-        class="input"
-        type="text"
-        placeholder="Example: Kakinada">
+        <div class="input-group">
+          <label class="input-label">Guards Required</label>
+          <input id="leadGuardsRequired" class="input" type="number" min="1" value="1">
+        </div>
 
+        <div class="input-group">
+          <label class="input-label">Shift Requirement</label>
+          <select id="leadShift" class="input">
+            <option value="Day">Day Shift (12h)</option>
+            <option value="Night">Night Shift (12h)</option>
+            <option value="Both" selected>Both / 24 Hours</option>
+          </select>
+        </div>
 
-      <label class="input-label">
-        Priority
-      </label>
+        <div class="input-group">
+          <label class="input-label">Requirement Type</label>
+          <select id="leadRequirementType" class="input">
+            <option value="Static Guarding" selected>Static Guarding</option>
+            <option value="Event Security">Event Security</option>
+            <option value="Bouncer / VIP">Bouncer / VIP</option>
+            <option value="Supervisor">Supervisor</option>
+            <option value="Mobile Patrol">Mobile Patrol</option>
+          </select>
+        </div>
 
-      <select
-        id="leadPriority"
-        class="input">
+        <div class="input-group">
+          <label class="input-label">Expected Start Date</label>
+          <input id="leadStartDate" class="input" type="date">
+        </div>
 
-        <option value="HOT">
-          🔥 HOT
-        </option>
+        <div class="input-group">
+          <label class="input-label">Next Follow-up Date</label>
+          <input id="leadFollowupDate" class="input" type="date">
+        </div>
 
-        <option value="WARM">
-          🟡 WARM
-        </option>
+        <div class="input-group">
+          <label class="input-label">Priority</label>
+          <select id="leadPriority" class="input">
+            <option value="HOT" selected>🔥 HOT</option>
+            <option value="WARM">🟡 WARM</option>
+            <option value="WATCH">⚪ WATCH</option>
+          </select>
+        </div>
 
-        <option value="WATCH">
-          ⚪ WATCH
-        </option>
+        <div class="input-group">
+          <label class="input-label">Status</label>
+          <select id="leadStatus" class="input">
+            <option value="NEW" selected>NEW</option>
+            <option value="CONTACTED">CONTACTED</option>
+            <option value="FOLLOW_UP">FOLLOW_UP</option>
+            <option value="CONVERTED">CONVERTED</option>
+            <option value="LOST">LOST</option>
+          </select>
+        </div>
 
-      </select>
+        <div class="input-group full-width">
+          <label class="input-label">Requirement Notes & Details</label>
+          <input id="leadNotes" class="input" type="text" placeholder="e.g. Needs armed guard for night shift, budget discussed">
+        </div>
 
-
-      <label class="input-label">
-        Status
-      </label>
-
-      <select
-        id="leadStatus"
-        class="input">
-
-        <option value="NEW">
-          NEW
-        </option>
-
-        <option value="FOLLOW_UP">
-          FOLLOW_UP
-        </option>
-
-        <option value="CONTACTED">
-          CONTACTED
-        </option>
-
-      </select>
-
-
-      <label class="input-label">
-        Notes
-      </label>
-
-      <input
-        id="leadNotes"
-        class="input"
-        type="text"
-        placeholder="Security requirement details">
-
+      </div>
 
       <div class="modal-buttons">
-
-        <button
-          id="cancelLeadButton"
-          class="cancel-button">
-          Cancel
-        </button>
-
-        <button
-          id="saveLeadButton"
-          class="save-button">
-          Save Lead
-        </button>
-
+        <button id="cancelLeadButton" class="btn-secondary">Cancel</button>
+        <button id="saveLeadButton" class="btn-primary">Save Lead</button>
       </div>
 
     </div>
@@ -363,7 +320,54 @@
 
 
   <!-- =========================
-       FIREBASE + APP JAVASCRIPT
+       QUICK FOLLOW-UP MODAL
+  ========================== -->
+
+  <div id="followupModal" class="modal hidden">
+
+    <div class="modal-card">
+
+      <div class="modal-title" id="followupLeadTitle">
+        📞 Log Follow-Up
+      </div>
+
+      <div class="input-group">
+        <label class="input-label">Updated Lead Status</label>
+        <select id="followupStatus" class="input">
+          <option value="CONTACTED">CONTACTED</option>
+          <option value="FOLLOW_UP" selected>FOLLOW_UP</option>
+          <option value="CONVERTED">CONVERTED (Won)</option>
+          <option value="LOST">LOST</option>
+        </select>
+      </div>
+
+      <div class="input-group">
+        <label class="input-label">Next Follow-Up Date</label>
+        <input id="followupNextDate" class="input" type="date">
+      </div>
+
+      <div class="input-group">
+        <label class="input-label">Follow-Up Notes</label>
+        <textarea id="followupNote" class="input" rows="3" placeholder="Summary of discussion or next actions..."></textarea>
+      </div>
+
+      <div class="history-timeline">
+        <div class="timeline-title">Follow-Up History Log</div>
+        <div id="followupHistoryList"></div>
+      </div>
+
+      <div class="modal-buttons">
+        <button id="cancelFollowupButton" class="btn-secondary">Close</button>
+        <button id="saveFollowupButton" class="btn-primary">Save Record</button>
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <!-- =========================
+       APPLICATION SCRIPT MODULE
   ========================== -->
 
   <script type="module" src="./js/app.js"></script>
