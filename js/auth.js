@@ -1,4 +1,4 @@
-import { auth } from "../firebase.js";
+import { auth, db } from "../firebase.js";
 
 import {
   onAuthStateChanged,
@@ -6,6 +6,13 @@ import {
   createUserWithEmailAndPassword,
   signOut
 } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js";
+
+import {
+  doc,
+  getDoc,
+  setDoc,
+  serverTimestamp
+} from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
 
 export function loginUser(email, password) {
   return signInWithEmailAndPassword(auth, email, password);
@@ -21,6 +28,30 @@ export function logoutUser() {
 
 export function initAuthStateListener(onChange) {
   return onAuthStateChanged(auth, onChange);
+}
+
+export async function fetchUserProfile(uid) {
+  try {
+    const userRef = doc(db, "users", uid);
+    const snap = await getDoc(userRef);
+    if (snap.exists()) {
+      return snap.data();
+    }
+  } catch (err) {
+    console.error("Fetch user profile error:", err);
+  }
+  return null;
+}
+
+export async function saveUserProfile(uid, { companyName, email }) {
+  const userRef = doc(db, "users", uid);
+  const data = {
+    companyName: companyName || "Security Agency",
+    email: email || "",
+    updatedAt: serverTimestamp()
+  };
+  await setDoc(userRef, data, { merge: true });
+  return data;
 }
 
 export function getAuthError(error) {

@@ -3,7 +3,9 @@ import {
   registerUser,
   logoutUser,
   initAuthStateListener,
-  getAuthError
+  getAuthError,
+  fetchUserProfile,
+  saveUserProfile
 } from "./auth.js";
 
 import {
@@ -30,11 +32,22 @@ import {
   closeDetailsModal,
   updateDashboardStats,
   renderLeadsList,
-  isFollowupDue
+  isFollowupDue,
+  initTheme,
+  toggleTheme,
+  togglePasswordVisibility,
+  setCustomerGreeting,
+  openProfileModal,
+  closeProfileModal,
+  setProfileFormError,
+  openSupportModal,
+  closeSupportModal
 } from "./ui.js";
 
 let rawLeads = [];
 let unsubscribeLeads = null;
+let currentUser = null;
+let currentProfile = null;
 
 let filterState = {
   searchQuery: "",
@@ -44,13 +57,50 @@ let filterState = {
 };
 
 /* =========================
+   INITIALIZATION
+========================== */
+initTheme();
+
+/* =========================
+   THEME TOGGLE LISTENERS
+========================== */
+if (elements.loginThemeToggleBtn) {
+  elements.loginThemeToggleBtn.addEventListener("click", () => toggleTheme());
+}
+if (elements.appThemeToggleBtn) {
+  elements.appThemeToggleBtn.addEventListener("click", () => toggleTheme());
+}
+
+/* =========================
+   PASSWORD VISIBILITY TOGGLE
+========================== */
+if (elements.passwordToggleBtn) {
+  elements.passwordToggleBtn.addEventListener("click", () => togglePasswordVisibility());
+}
+
+/* =========================
    AUTH LISTENER
 ========================== */
-initAuthStateListener(user => {
+initAuthStateListener(async user => {
+  currentUser = user;
   if (user) {
     showAppScreen();
+    // Load User Profile
+    try {
+      currentProfile = await fetchUserProfile(user.uid);
+      if (currentProfile && currentProfile.companyName) {
+        setCustomerGreeting(currentProfile.companyName);
+      } else {
+        setCustomerGreeting("Security Agency");
+      }
+    } catch (err) {
+      console.error("Error fetching user profile:", err);
+      setCustomerGreeting("Security Agency");
+    }
+
     startFirestoreListener();
   } else {
+    currentProfile = null;
     showLoginScreen();
     if (unsubscribeLeads) {
       unsubscribeLeads();
@@ -58,6 +108,82 @@ initAuthStateListener(user => {
     }
   }
 });
+
+/* =========================
+   USER PROFILE MODAL ACTIONS
+========================== */
+if (elements.profileBtn) {
+  elements.profileBtn.addEventListener("click", () => {
+    openProfileModal(currentProfile?.companyName || "");
+  });
+}
+
+if (elements.cancelProfileButton) {
+  elements.cancelProfileButton.addEventListener("click", () => {
+    closeProfileModal();
+  });
+}
+
+if (elements.profileModal) {
+  elements.profileModal.addEventListener("click", event => {
+    if (event.target === elements.profileModal) {
+      closeProfileModal();
+    }
+  });
+}
+
+if (elements.saveProfileButton) {
+  elements.saveProfileButton.addEventListener("click", async () => {
+    setProfileFormError("");
+    if (!currentUser) return;
+
+    const companyName = elements.companyNameInput.value.trim();
+    if (!companyName) {
+      setProfileFormError("Company / Agency name is required.");
+      return;
+    }
+
+    elements.saveProfileButton.disabled = true;
+    elements.saveProfileButton.textContent = "Saving...";
+
+    try {
+      await saveUserProfile(currentUser.uid, { companyName });
+      currentProfile = { companyName };
+      setCustomerGreeting(companyName);
+      setAppMessage("Profile updated successfully.");
+      closeProfileModal();
+    } catch (error) {
+      console.error("Save profile error:", error);
+      setProfileFormError("Could not save profile.");
+    } finally {
+      elements.saveProfileButton.disabled = false;
+      elements.saveProfileButton.textContent = "Save Profile";
+    }
+  });
+}
+
+/* =========================
+   SATISH SUPPORT MODAL ACTIONS
+========================== */
+if (elements.supportBtn) {
+  elements.supportBtn.addEventListener("click", () => {
+    openSupportModal();
+  });
+}
+
+if (elements.closeSupportButton) {
+  elements.closeSupportButton.addEventListener("click", () => {
+    closeSupportModal();
+  });
+}
+
+if (elements.supportModal) {
+  elements.supportModal.addEventListener("click", event => {
+    if (event.target === elements.supportModal) {
+      closeSupportModal();
+    }
+  });
+}
 
 /* =========================
    FIRESTORE LISTENER

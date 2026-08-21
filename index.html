@@ -14,7 +14,7 @@
   <link rel="manifest" href="./manifest.json">
   <link rel="stylesheet" href="./style.css">
 
-  <title>Security Lead Radar</title>
+  <title>Satish Security Lead Radar</title>
 </head>
 
 <body>
@@ -27,10 +27,14 @@
 
     <div class="login-card">
 
+      <div class="card-top-controls">
+        <button id="loginThemeToggleBtn" class="btn-theme-toggle" title="Toggle Light/Dark Theme">🌙 Dark</button>
+      </div>
+
       <div class="login-logo">🛡️</div>
 
       <div class="login-title">
-        Security Lead Radar
+        Satish Security Lead Radar
       </div>
 
       <div class="login-subtitle">
@@ -50,13 +54,16 @@
 
       <div class="input-group">
         <label class="input-label">Password</label>
-        <input
-          id="passwordInput"
-          class="input"
-          type="password"
-          placeholder="Enter password"
-          autocomplete="current-password"
-        >
+        <div class="password-input-wrapper">
+          <input
+            id="passwordInput"
+            class="input"
+            type="password"
+            placeholder="Enter password"
+            autocomplete="current-password"
+          >
+          <button type="button" id="passwordToggleBtn" class="password-toggle-btn" title="Toggle Password Visibility">👁️</button>
+        </div>
       </div>
 
       <button id="loginButton" class="btn-primary">
@@ -86,15 +93,18 @@
 
         <div>
           <div class="brand">
-            🛡️ Security Lead Radar
+            🛡️ Satish Security Lead Radar
           </div>
-          <div class="sub-banner">Welcome — Jules Development Preview Test</div>
+          <div class="sub-banner" id="userGreetingBanner">Welcome — Security Agency</div>
           <div class="location">📍 Kakinada Intelligence Hub</div>
         </div>
 
-        <button id="logoutButton" class="logout-button">
-          Logout
-        </button>
+        <div class="header-actions">
+          <button id="appThemeToggleBtn" class="btn-theme-toggle" title="Toggle Theme">🌙 Dark</button>
+          <button id="profileBtn" class="btn-header-action" title="Company Profile">🏢 Profile</button>
+          <button id="supportBtn" class="btn-header-action btn-support" title="Satish Support">📞 Support</button>
+          <button id="logoutButton" class="logout-button">Logout</button>
+        </div>
 
       </div>
 
@@ -427,6 +437,71 @@
 
       <div class="modal-buttons">
         <button id="closeDetailsButton" class="btn-secondary">Close</button>
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <!-- =========================
+       USER PROFILE SETUP MODAL
+  ========================== -->
+
+  <div id="profileModal" class="modal hidden">
+
+    <div class="modal-card">
+
+      <div class="modal-title">
+        🏢 Agency Identity Setup
+      </div>
+
+      <div id="profileFormError" class="form-error"></div>
+
+      <div class="input-group">
+        <label class="input-label">Security Agency / Company Name *</label>
+        <input id="companyNameInput" class="input" type="text" placeholder="e.g. Satish Security Services">
+      </div>
+
+      <div class="modal-buttons">
+        <button id="cancelProfileButton" class="btn-secondary">Cancel</button>
+        <button id="saveProfileButton" class="btn-primary">Save Profile</button>
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <!-- =========================
+       SATISH SUPPORT MODAL
+  ========================== -->
+
+  <div id="supportModal" class="modal hidden">
+
+    <div class="modal-card">
+
+      <div class="modal-title">
+        📞 Satish Support Hub
+      </div>
+
+      <div style="margin: 12px 0; font-size:14px; color:var(--text-secondary); line-height: 1.5;">
+        Need technical assistance, customized lead parameters, or system support? Get in touch directly with Satish.
+      </div>
+
+      <div class="support-contact-box">
+        <div class="support-item">
+          <strong>📞 Phone Call:</strong>
+          <a href="tel:7386885653" class="support-link">7386885653</a>
+        </div>
+        <div class="support-item" style="margin-top:8px;">
+          <strong>💬 WhatsApp Support:</strong>
+          <a href="https://wa.me/917386885653?text=Hello%20Satish%2C%20I%20need%20support%20with%20Security%20Lead%20Radar" target="_blank" rel="noopener noreferrer" class="support-link">Direct WhatsApp Message</a>
+        </div>
+      </div>
+
+      <div class="modal-buttons" style="margin-top:16px;">
+        <button id="closeSupportButton" class="btn-primary">Close</button>
       </div>
 
     </div>

@@ -1,4 +1,4 @@
-:root {
+:root, [data-theme="dark"] {
   --bg-primary: #0b0f14;
   --bg-surface: #151c25;
   --bg-card: #121922;
@@ -22,6 +22,32 @@
   --radius-sm: 8px;
   --radius-md: 12px;
   --radius-lg: 18px;
+
+  --header-bg: #0f1620;
+}
+
+[data-theme="light"] {
+  --bg-primary: #f8fafc;
+  --bg-surface: #ffffff;
+  --bg-card: #f1f5f9;
+  --bg-input: #ffffff;
+  --border-color: #cbd5e1;
+  --border-focus: #2563eb;
+
+  --text-primary: #0f172a;
+  --text-secondary: #475569;
+  --text-muted: #64748b;
+
+  --accent-blue: #0284c7;
+  --accent-cyan: #0891b2;
+  --accent-green: #16a34a;
+  --accent-whatsapp: #16a34a;
+  --accent-hot: #dc2626;
+  --accent-warm: #d97706;
+  --accent-watch: #64748b;
+  --accent-purple: #9333ea;
+
+  --header-bg: #ffffff;
 }
 
 * {
@@ -30,7 +56,7 @@
 
 html {
   background: var(--bg-primary);
-  color-scheme: dark;
+  color-scheme: dark light;
 }
 
 body {
@@ -42,6 +68,7 @@ body {
   line-height: 1.5;
   -webkit-font-smoothing: antialiased;
   overflow-x: hidden;
+  transition: background-color 0.2s, color 0.2s;
 }
 
 button, input, select, textarea {
@@ -65,16 +92,41 @@ button:active {
 }
 
 /* =========================
-   LOGIN SCREEN
+   THEME TOGGLE BUTTON & TOP CONTROLS
+========================= */
+
+.card-top-controls {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 8px;
+}
+
+.btn-theme-toggle {
+  padding: 6px 12px;
+  border: 1px solid var(--border-color);
+  border-radius: 20px;
+  background: var(--bg-input);
+  color: var(--text-primary);
+  font-size: 12px;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+}
+
+/* =========================
+   LOGIN SCREEN & FIXED BRANDING
 ========================= */
 
 #loginScreen {
   min-height: 100vh;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
   padding: 20px;
-  background: radial-gradient(circle at top, #1a2432 0%, #0b0f14 80%);
+  background: radial-gradient(circle at top, var(--bg-surface) 0%, var(--bg-primary) 80%);
 }
 
 .login-card {
@@ -84,13 +136,13 @@ button:active {
   border: 1px solid var(--border-color);
   border-radius: var(--radius-lg);
   padding: 28px;
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
 }
 
 .login-logo {
   text-align: center;
   font-size: 48px;
-  margin-bottom: 8px;
+  margin-bottom: 4px;
 }
 
 .login-title {
@@ -98,18 +150,20 @@ button:active {
   font-size: 22px;
   font-weight: 800;
   letter-spacing: -0.5px;
+  color: var(--text-primary);
 }
 
 .login-subtitle {
   text-align: center;
   color: var(--text-secondary);
-  font-size: 13px;
+  font-size: 12px;
+  font-weight: 500;
   margin-top: 4px;
-  margin-bottom: 24px;
+  margin-bottom: 22px;
 }
 
 /* =========================
-   FORM CONTROLS
+   FORM CONTROLS & PASSWORD SHOW/HIDE
 ========================= */
 
 .input-group {
@@ -126,6 +180,11 @@ button:active {
   margin-bottom: 5px;
 }
 
+.password-input-wrapper {
+  position: relative;
+  width: 100%;
+}
+
 .input {
   width: 100%;
   padding: 11px 13px;
@@ -135,6 +194,23 @@ button:active {
   color: var(--text-primary);
   outline: none;
   transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.password-input-wrapper .input {
+  padding-right: 40px;
+}
+
+.password-toggle-btn {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: transparent;
+  border: none;
+  color: var(--text-secondary);
+  font-size: 16px;
+  padding: 4px;
+  cursor: pointer;
 }
 
 .input:focus {
@@ -158,8 +234,8 @@ button:active {
   width: 100%;
   padding: 12px;
   border-radius: var(--radius-md);
-  background: #ffffff;
-  color: #000000;
+  background: var(--text-primary);
+  color: var(--bg-primary);
   font-weight: 700;
   margin-top: 6px;
 }
@@ -178,7 +254,7 @@ button:active {
 .login-message {
   min-height: 20px;
   text-align: center;
-  color: #fca5a5;
+  color: var(--accent-hot);
   font-size: 13px;
   margin-top: 14px;
 }
@@ -188,8 +264,8 @@ button:active {
 ========================= */
 
 .app-header {
-  padding: calc(16px + env(safe-area-inset-top)) 20px 16px;
-  background: #0f1620;
+  padding: calc(14px + env(safe-area-inset-top)) 20px 14px;
+  background: var(--header-bg);
   border-bottom: 1px solid var(--border-color);
   position: sticky;
   top: 0;
@@ -201,35 +277,60 @@ button:active {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  gap: 10px;
 }
 
 .brand {
-  font-size: 20px;
+  font-size: 18px;
   font-weight: 800;
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
 }
 
 .sub-banner {
-  font-size: 11px;
-  font-weight: 600;
-  color: var(--accent-warm);
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--accent-blue);
   margin-top: 2px;
 }
 
 .location {
   margin-top: 2px;
   color: var(--text-muted);
+  font-size: 11px;
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.btn-header-action {
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  padding: 7px 10px;
+  background: var(--bg-surface);
+  color: var(--text-primary);
   font-size: 12px;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.btn-support {
+  border-color: rgba(56, 189, 248, 0.3);
+  color: var(--accent-blue);
 }
 
 .logout-button {
   border: 1px solid var(--border-color);
   border-radius: var(--radius-sm);
-  padding: 8px 12px;
+  padding: 7px 10px;
   background: var(--bg-surface);
-  color: var(--text-secondary);
+  color: var(--accent-hot);
   font-size: 12px;
   font-weight: 600;
 }
@@ -388,7 +489,7 @@ button:active {
 }
 
 .lead-card:hover {
-  border-color: #3b4252;
+  border-color: var(--border-focus);
 }
 
 .lead-top {
@@ -467,7 +568,7 @@ button:active {
   background: var(--bg-input);
   padding: 8px 10px;
   border-radius: var(--radius-sm);
-  border: 1px solid #1a222d;
+  border: 1px solid var(--border-color);
 }
 
 .lead-followup-banner {
@@ -575,7 +676,7 @@ button:active {
 }
 
 /* =========================
-   LEAD DETAILS MODAL
+   LEAD DETAILS & SUPPORT MODALS
 ========================= */
 
 .detail-row {
@@ -616,8 +717,28 @@ button:active {
   text-transform: uppercase;
 }
 
+.support-contact-box {
+  background: var(--bg-input);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  padding: 14px;
+  margin-top: 10px;
+}
+
+.support-item {
+  font-size: 13px;
+  color: var(--text-primary);
+}
+
+.support-link {
+  color: var(--accent-blue);
+  font-weight: 700;
+  text-decoration: none;
+  margin-left: 6px;
+}
+
 /* =========================
-   MODALS
+   MODALS & DIALOGS
 ========================= */
 
 .modal {

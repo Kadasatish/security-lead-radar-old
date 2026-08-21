@@ -3,19 +3,32 @@ export const elements = {
   appScreen: document.getElementById("appScreen"),
   emailInput: document.getElementById("emailInput"),
   passwordInput: document.getElementById("passwordInput"),
+  passwordToggleBtn: document.getElementById("passwordToggleBtn"),
   loginButton: document.getElementById("loginButton"),
   registerButton: document.getElementById("registerButton"),
   logoutButton: document.getElementById("logoutButton"),
   loginMessage: document.getElementById("loginMessage"),
   appMessage: document.getElementById("appMessage"),
 
+  // Theme Toggles
+  loginThemeToggleBtn: document.getElementById("loginThemeToggleBtn"),
+  appThemeToggleBtn: document.getElementById("appThemeToggleBtn"),
+
+  // Header Elements
+  userGreetingBanner: document.getElementById("userGreetingBanner"),
+  profileBtn: document.getElementById("profileBtn"),
+  supportBtn: document.getElementById("supportBtn"),
+
   // Modals & Error elements
   leadModal: document.getElementById("leadModal"),
   followupModal: document.getElementById("followupModal"),
   detailsModal: document.getElementById("detailsModal"),
+  profileModal: document.getElementById("profileModal"),
+  supportModal: document.getElementById("supportModal"),
 
   leadFormError: document.getElementById("leadFormError"),
   followupFormError: document.getElementById("followupFormError"),
+  profileFormError: document.getElementById("profileFormError"),
 
   addLeadButton: document.getElementById("addLeadButton"),
   cancelLeadButton: document.getElementById("cancelLeadButton"),
@@ -23,6 +36,10 @@ export const elements = {
   cancelFollowupButton: document.getElementById("cancelFollowupButton"),
   saveFollowupButton: document.getElementById("saveFollowupButton"),
   closeDetailsButton: document.getElementById("closeDetailsButton"),
+
+  cancelProfileButton: document.getElementById("cancelProfileButton"),
+  saveProfileButton: document.getElementById("saveProfileButton"),
+  closeSupportButton: document.getElementById("closeSupportButton"),
 
   // Container
   leadsContainer: document.getElementById("leadsContainer"),
@@ -78,9 +95,84 @@ export const elements = {
   detailFollowupDate: document.getElementById("detailFollowupDate"),
   detailPriority: document.getElementById("detailPriority"),
   detailNotes: document.getElementById("detailNotes"),
-  detailHistoryList: document.getElementById("detailHistoryList")
+  detailHistoryList: document.getElementById("detailHistoryList"),
+
+  // Profile Form Input
+  companyNameInput: document.getElementById("companyNameInput")
 };
 
+/* =========================
+   THEME MANAGER
+========================== */
+export function initTheme() {
+  const savedTheme = localStorage.getItem("theme") || "dark";
+  applyTheme(savedTheme);
+}
+
+export function toggleTheme() {
+  const current = document.documentElement.getAttribute("data-theme") || "dark";
+  const next = current === "dark" ? "light" : "dark";
+  applyTheme(next);
+  localStorage.setItem("theme", next);
+}
+
+export function applyTheme(theme) {
+  document.documentElement.setAttribute("data-theme", theme);
+  const icon = theme === "dark" ? "🌙 Dark" : "☀️ Light";
+  if (elements.loginThemeToggleBtn) elements.loginThemeToggleBtn.textContent = icon;
+  if (elements.appThemeToggleBtn) elements.appThemeToggleBtn.textContent = icon;
+}
+
+/* =========================
+   PASSWORD SHOW/HIDE
+========================== */
+export function togglePasswordVisibility() {
+  if (!elements.passwordInput) return;
+  const isPassword = elements.passwordInput.type === "password";
+  elements.passwordInput.type = isPassword ? "text" : "password";
+  if (elements.passwordToggleBtn) {
+    elements.passwordToggleBtn.textContent = isPassword ? "🙈" : "👁️";
+  }
+}
+
+/* =========================
+   USER GREETING & PROFILE MODAL
+========================== */
+export function setCustomerGreeting(companyName) {
+  if (elements.userGreetingBanner) {
+    elements.userGreetingBanner.textContent = `Welcome — ${companyName || "Security Agency"}`;
+  }
+}
+
+export function openProfileModal(companyName = "") {
+  if (elements.profileFormError) elements.profileFormError.textContent = "";
+  if (elements.companyNameInput) elements.companyNameInput.value = companyName;
+  if (elements.profileModal) elements.profileModal.classList.remove("hidden");
+}
+
+export function closeProfileModal() {
+  if (elements.profileFormError) elements.profileFormError.textContent = "";
+  if (elements.profileModal) elements.profileModal.classList.add("hidden");
+}
+
+export function setProfileFormError(msg) {
+  if (elements.profileFormError) elements.profileFormError.textContent = msg;
+}
+
+/* =========================
+   SATISH SUPPORT MODAL
+========================== */
+export function openSupportModal() {
+  if (elements.supportModal) elements.supportModal.classList.remove("hidden");
+}
+
+export function closeSupportModal() {
+  if (elements.supportModal) elements.supportModal.classList.add("hidden");
+}
+
+/* =========================
+   SCREEN & MESSAGES
+========================== */
 export function showAppScreen() {
   elements.loginScreen.classList.add("hidden");
   elements.appScreen.classList.remove("hidden");
@@ -114,6 +206,9 @@ export function setFollowupFormError(msg) {
   if (elements.followupFormError) elements.followupFormError.textContent = msg;
 }
 
+/* =========================
+   LEAD MODAL
+========================== */
 export function openLeadModal(lead = null) {
   setLeadFormError("");
   if (lead) {
@@ -158,6 +253,9 @@ export function resetLeadModalForm() {
   delete elements.leadModal.dataset.editId;
 }
 
+/* =========================
+   FOLLOW-UP MODAL
+========================== */
 export function openFollowupModal(lead) {
   setFollowupFormError("");
   elements.followupModal.dataset.leadId = lead.id;
@@ -176,6 +274,9 @@ export function closeFollowupModal() {
   elements.followupModal.classList.add("hidden");
 }
 
+/* =========================
+   DETAILS MODAL
+========================== */
 export function openDetailsModal(lead) {
   elements.detailsModal.dataset.leadId = lead.id;
   elements.detailName.textContent = lead.name || "Unnamed Firm";
