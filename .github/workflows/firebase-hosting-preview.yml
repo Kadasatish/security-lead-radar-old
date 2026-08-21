@@ -1,0 +1,30 @@
+name: Deploy to Firebase Hosting Preview
+
+'on':
+  push:
+    branches:
+      - jules-development
+
+jobs:
+  deploy-preview:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Deploy to Firebase Hosting Preview
+        id: deploy_preview
+        uses: FirebaseExtended/action-hosting-deploy@v0
+        with:
+          repoToken: ${{ secrets.GITHUB_TOKEN }}
+          firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+          projectId: studio-4588813814-af30e
+          channelId: jules-development
+
+      - name: Output Preview URL
+        run: |
+          echo "=========================================="
+          echo "Firebase Hosting Preview Channel Deployment"
+          echo "Preview URL: ${{ steps.deploy_preview.outputs.details_url }}"
+          echo "=========================================="
