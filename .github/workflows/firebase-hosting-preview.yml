@@ -4,6 +4,7 @@ name: Deploy to Firebase Hosting Preview
   push:
     branches:
       - jules-development
+      - jules-development-8362758780154500446
 
 jobs:
   deploy-preview:
