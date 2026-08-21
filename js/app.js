@@ -26,6 +26,8 @@ import {
   closeLeadModal,
   openFollowupModal,
   closeFollowupModal,
+  openDetailsModal,
+  closeDetailsModal,
   updateDashboardStats,
   renderLeadsList,
   isFollowupDue
@@ -113,7 +115,8 @@ function applyFiltersAndRender() {
   renderLeadsList(filtered, {
     onEdit: handleEditLead,
     onDelete: handleDeleteLead,
-    onFollowup: handleOpenFollowup
+    onFollowup: handleOpenFollowup,
+    onViewDetails: handleViewDetails
   });
 }
 
@@ -353,3 +356,40 @@ elements.saveFollowupButton.addEventListener("click", async () => {
     elements.saveFollowupButton.textContent = "Save Record";
   }
 });
+
+/* =========================
+   LEAD DETAILS & QUICK STATUS ACTIONS
+========================== */
+function handleViewDetails(lead) {
+  openDetailsModal(lead);
+}
+
+if (elements.closeDetailsButton) {
+  elements.closeDetailsButton.addEventListener("click", () => {
+    closeDetailsModal();
+  });
+}
+
+if (elements.detailsModal) {
+  elements.detailsModal.addEventListener("click", event => {
+    if (event.target === elements.detailsModal) {
+      closeDetailsModal();
+    }
+  });
+}
+
+if (elements.detailsQuickStatus) {
+  elements.detailsQuickStatus.addEventListener("change", async e => {
+    const leadId = elements.detailsModal.dataset.leadId;
+    if (!leadId) return;
+
+    const newStatus = e.target.value;
+    try {
+      await updateLead(leadId, { status: newStatus });
+      setAppMessage(`Status updated to ${newStatus}.`);
+    } catch (error) {
+      console.error("Quick status update error:", error);
+      setAppMessage("Could not update status.");
+    }
+  });
+}

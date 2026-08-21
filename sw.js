@@ -1,4 +1,4 @@
-const CACHE_NAME = "security-lead-radar-v3";
+const CACHE_NAME = "security-lead-radar-v4";
 
 const APP_FILES = [
   "./",

@@ -374,6 +374,67 @@
 
 
   <!-- =========================
+       LEAD DETAILS MODAL
+  ========================== -->
+
+  <div id="detailsModal" class="modal hidden">
+
+    <div class="modal-card">
+
+      <div class="modal-title" id="detailsModalTitle">
+        👁️ Opportunity Details
+      </div>
+
+      <div class="quick-comm-row">
+        <a id="detailsCallBtn" href="tel:7386885653" class="btn-comm btn-call">📞 Call (7386885653)</a>
+        <a id="detailsWhatsappBtn" href="https://wa.me/917386885653" target="_blank" rel="noopener noreferrer" class="btn-comm btn-whatsapp">💬 WhatsApp</a>
+      </div>
+
+      <div class="quick-status-box">
+        <span class="quick-status-label">Quick Status Change</span>
+        <select id="detailsQuickStatus" class="input" style="width:auto;margin:0;">
+          <option value="NEW">NEW</option>
+          <option value="CONTACTED">CONTACTED</option>
+          <option value="FOLLOW_UP">FOLLOW_UP</option>
+          <option value="INTERESTED">INTERESTED</option>
+          <option value="CONVERTED">CONVERTED</option>
+          <option value="LOST">LOST</option>
+        </select>
+      </div>
+
+      <div style="margin-top:14px;">
+        <div class="detail-row"><span class="detail-label">Business / Firm</span><span class="detail-value" id="detailName">-</span></div>
+        <div class="detail-row"><span class="detail-label">Location</span><span class="detail-value" id="detailLocation">-</span></div>
+        <div class="detail-row"><span class="detail-label">Contact Person</span><span class="detail-value" id="detailContactPerson">-</span></div>
+        <div class="detail-row"><span class="detail-label">Phone</span><span class="detail-value" id="detailPhone">-</span></div>
+        <div class="detail-row"><span class="detail-label">Guards Required</span><span class="detail-value" id="detailGuards">-</span></div>
+        <div class="detail-row"><span class="detail-label">Shift Requirement</span><span class="detail-value" id="detailShift">-</span></div>
+        <div class="detail-row"><span class="detail-label">Requirement Type</span><span class="detail-value" id="detailReqType">-</span></div>
+        <div class="detail-row"><span class="detail-label">Expected Start Date</span><span class="detail-value" id="detailStartDate">-</span></div>
+        <div class="detail-row"><span class="detail-label">Next Follow-Up Date</span><span class="detail-value" id="detailFollowupDate">-</span></div>
+        <div class="detail-row"><span class="detail-label">Priority</span><span class="detail-value" id="detailPriority">-</span></div>
+      </div>
+
+      <div style="margin-top:12px;">
+        <div class="input-label">Notes / Requirement Details</div>
+        <div id="detailNotes" class="lead-notes" style="margin-top:4px;">No notes added.</div>
+      </div>
+
+      <div class="history-timeline">
+        <div class="timeline-title">Follow-Up History Log</div>
+        <div id="detailHistoryList"></div>
+      </div>
+
+      <div class="modal-buttons">
+        <button id="closeDetailsButton" class="btn-secondary">Close</button>
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <!-- =========================
        APPLICATION SCRIPT MODULE
   ========================== -->
 

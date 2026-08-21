@@ -12,6 +12,8 @@ export const elements = {
   // Modals & Error elements
   leadModal: document.getElementById("leadModal"),
   followupModal: document.getElementById("followupModal"),
+  detailsModal: document.getElementById("detailsModal"),
+
   leadFormError: document.getElementById("leadFormError"),
   followupFormError: document.getElementById("followupFormError"),
 
@@ -20,6 +22,7 @@ export const elements = {
   saveLeadButton: document.getElementById("saveLeadButton"),
   cancelFollowupButton: document.getElementById("cancelFollowupButton"),
   saveFollowupButton: document.getElementById("saveFollowupButton"),
+  closeDetailsButton: document.getElementById("closeDetailsButton"),
 
   // Container
   leadsContainer: document.getElementById("leadsContainer"),
@@ -58,7 +61,24 @@ export const elements = {
   followupStatusSelect: document.getElementById("followupStatus"),
   followupNextDateInput: document.getElementById("followupNextDate"),
   followupNoteInput: document.getElementById("followupNote"),
-  followupHistoryList: document.getElementById("followupHistoryList")
+  followupHistoryList: document.getElementById("followupHistoryList"),
+
+  // Details Modal Fields
+  detailsCallBtn: document.getElementById("detailsCallBtn"),
+  detailsWhatsappBtn: document.getElementById("detailsWhatsappBtn"),
+  detailsQuickStatus: document.getElementById("detailsQuickStatus"),
+  detailName: document.getElementById("detailName"),
+  detailLocation: document.getElementById("detailLocation"),
+  detailContactPerson: document.getElementById("detailContactPerson"),
+  detailPhone: document.getElementById("detailPhone"),
+  detailGuards: document.getElementById("detailGuards"),
+  detailShift: document.getElementById("detailShift"),
+  detailReqType: document.getElementById("detailReqType"),
+  detailStartDate: document.getElementById("detailStartDate"),
+  detailFollowupDate: document.getElementById("detailFollowupDate"),
+  detailPriority: document.getElementById("detailPriority"),
+  detailNotes: document.getElementById("detailNotes"),
+  detailHistoryList: document.getElementById("detailHistoryList")
 };
 
 export function showAppScreen() {
@@ -146,7 +166,7 @@ export function openFollowupModal(lead) {
   elements.followupNextDateInput.value = lead.followupDate || "";
   elements.followupNoteInput.value = "";
 
-  renderFollowupHistory(lead.followupHistory || []);
+  renderFollowupHistory(lead.followupHistory || [], elements.followupHistoryList);
   elements.followupModal.classList.remove("hidden");
 }
 
@@ -156,10 +176,42 @@ export function closeFollowupModal() {
   elements.followupModal.classList.add("hidden");
 }
 
-function renderFollowupHistory(history) {
-  elements.followupHistoryList.innerHTML = "";
+export function openDetailsModal(lead) {
+  elements.detailsModal.dataset.leadId = lead.id;
+  elements.detailName.textContent = lead.name || "Unnamed Firm";
+  elements.detailLocation.textContent = lead.location || "Kakinada";
+  elements.detailContactPerson.textContent = lead.contactPerson || "Not specified";
+  elements.detailPhone.textContent = lead.phone || "7386885653";
+  elements.detailGuards.textContent = `${lead.guardsRequired || 1} Guard(s)`;
+  elements.detailShift.textContent = lead.shift || "Both";
+  elements.detailReqType.textContent = lead.requirementType || "Static Guarding";
+  elements.detailStartDate.textContent = lead.startDate || "Flexible";
+  elements.detailFollowupDate.textContent = lead.followupDate || "Not scheduled";
+  elements.detailPriority.textContent = lead.priority || "WATCH";
+  elements.detailNotes.textContent = lead.notes || "No notes added.";
+
+  elements.detailsQuickStatus.value = lead.status || "NEW";
+
+  const targetPhone = lead.phone || "7386885653";
+  elements.detailsCallBtn.href = `tel:${targetPhone}`;
+  elements.detailsCallBtn.textContent = `📞 Call (${targetPhone})`;
+
+  const waMsg = encodeURIComponent(`Hello, following up regarding security requirement for ${lead.name || "your firm"}.`);
+  elements.detailsWhatsappBtn.href = `https://wa.me/917386885653?text=${waMsg}`;
+
+  renderFollowupHistory(lead.followupHistory || [], elements.detailHistoryList);
+  elements.detailsModal.classList.remove("hidden");
+}
+
+export function closeDetailsModal() {
+  delete elements.detailsModal.dataset.leadId;
+  elements.detailsModal.classList.add("hidden");
+}
+
+function renderFollowupHistory(history, container) {
+  container.innerHTML = "";
   if (!history || history.length === 0) {
-    elements.followupHistoryList.innerHTML =
+    container.innerHTML =
       '<div class="timeline-note" style="color:var(--text-muted);">No follow-up records yet.</div>';
     return;
   }
@@ -182,7 +234,7 @@ function renderFollowupHistory(history) {
       <div class="timeline-note">${escapeHtml(item.note || "No note recorded")}</div>
       ${item.nextDate ? `<div style="color:var(--accent-blue);font-size:11px;margin-top:2px;">Next Due: ${item.nextDate}</div>` : ""}
     `;
-    elements.followupHistoryList.appendChild(div);
+    container.appendChild(div);
   });
 }
 
@@ -217,7 +269,7 @@ export function updateDashboardStats(allLeads) {
   if (elements.guardsCount) elements.guardsCount.textContent = totalGuards;
 }
 
-export function renderLeadsList(leads, { onEdit, onDelete, onFollowup }) {
+export function renderLeadsList(leads, { onEdit, onDelete, onFollowup, onViewDetails }) {
   elements.leadsContainer.innerHTML = "";
 
   elements.totalCount.textContent =
@@ -299,6 +351,33 @@ export function renderLeadsList(leads, { onEdit, onDelete, onFollowup }) {
       contact.innerHTML += `📞 <a class="phone-link" href="tel:${escapeHtml(lead.phone)}">${escapeHtml(lead.phone)}</a>`;
     }
 
+    // Quick Communication Row (Call, WhatsApp, Details)
+    const commRow = document.createElement("div");
+    commRow.className = "quick-comm-row";
+
+    const phoneNum = lead.phone || "7386885653";
+    const callBtn = document.createElement("a");
+    callBtn.className = "btn-comm btn-call";
+    callBtn.href = `tel:${phoneNum}`;
+    callBtn.textContent = `📞 Call`;
+
+    const waMsg = encodeURIComponent(`Hello, regarding security requirement for ${lead.name || "your business"}.`);
+    const waBtn = document.createElement("a");
+    waBtn.className = "btn-comm btn-whatsapp";
+    waBtn.href = `https://wa.me/917386885653?text=${waMsg}`;
+    waBtn.target = "_blank";
+    waBtn.rel = "noopener noreferrer";
+    waBtn.textContent = `💬 WhatsApp`;
+
+    const detailsBtn = document.createElement("button");
+    detailsBtn.className = "btn-comm btn-details";
+    detailsBtn.textContent = `👁️ Details`;
+    detailsBtn.addEventListener("click", () => onViewDetails(lead));
+
+    commRow.appendChild(callBtn);
+    commRow.appendChild(waBtn);
+    commRow.appendChild(detailsBtn);
+
     // Notes
     let notes = null;
     if (lead.notes) {
@@ -346,6 +425,7 @@ export function renderLeadsList(leads, { onEdit, onDelete, onFollowup }) {
     card.appendChild(top);
     card.appendChild(chips);
     if (contact.innerHTML) card.appendChild(contact);
+    card.appendChild(commRow);
     if (notes) card.appendChild(notes);
     if (followupBanner) card.appendChild(followupBanner);
     card.appendChild(actions);
