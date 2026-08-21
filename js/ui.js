@@ -9,9 +9,12 @@ export const elements = {
   loginMessage: document.getElementById("loginMessage"),
   appMessage: document.getElementById("appMessage"),
 
-  // Modals
+  // Modals & Error elements
   leadModal: document.getElementById("leadModal"),
   followupModal: document.getElementById("followupModal"),
+  leadFormError: document.getElementById("leadFormError"),
+  followupFormError: document.getElementById("followupFormError"),
+
   addLeadButton: document.getElementById("addLeadButton"),
   cancelLeadButton: document.getElementById("cancelLeadButton"),
   saveLeadButton: document.getElementById("saveLeadButton"),
@@ -83,7 +86,16 @@ export function setAppMessage(message) {
   }
 }
 
+export function setLeadFormError(msg) {
+  if (elements.leadFormError) elements.leadFormError.textContent = msg;
+}
+
+export function setFollowupFormError(msg) {
+  if (elements.followupFormError) elements.followupFormError.textContent = msg;
+}
+
 export function openLeadModal(lead = null) {
+  setLeadFormError("");
   if (lead) {
     elements.leadNameInput.value = lead.name || "";
     elements.leadLocationInput.value = lead.location || "";
@@ -110,6 +122,7 @@ export function closeLeadModal() {
 }
 
 export function resetLeadModalForm() {
+  setLeadFormError("");
   elements.leadNameInput.value = "";
   elements.leadLocationInput.value = "";
   elements.leadContactPersonInput.value = "";
@@ -126,6 +139,7 @@ export function resetLeadModalForm() {
 }
 
 export function openFollowupModal(lead) {
+  setFollowupFormError("");
   elements.followupModal.dataset.leadId = lead.id;
   elements.followupLeadTitle.textContent = `📞 Follow-Up: ${lead.name || "Lead"}`;
   elements.followupStatusSelect.value = lead.status || "FOLLOW_UP";
@@ -137,6 +151,7 @@ export function openFollowupModal(lead) {
 }
 
 export function closeFollowupModal() {
+  setFollowupFormError("");
   delete elements.followupModal.dataset.leadId;
   elements.followupModal.classList.add("hidden");
 }

@@ -20,6 +20,8 @@ import {
   showLoginScreen,
   setLoginMessage,
   setAppMessage,
+  setLeadFormError,
+  setFollowupFormError,
   openLeadModal,
   closeLeadModal,
   openFollowupModal,
@@ -226,7 +228,7 @@ function handleEditLead(lead) {
 }
 
 async function handleDeleteLead(lead) {
-  const confirmed = confirm(`Delete "${lead.name || "this lead"}"?`);
+  const confirmed = confirm(`Delete "${lead.name || "this lead"}" permanently?`);
   if (!confirmed) return;
 
   try {
@@ -238,8 +240,9 @@ async function handleDeleteLead(lead) {
   }
 }
 
-// SAVE LEAD
+// SAVE LEAD WITH VALIDATION
 elements.saveLeadButton.addEventListener("click", async () => {
+  setLeadFormError("");
   const name = elements.leadNameInput.value.trim();
   const location = elements.leadLocationInput.value.trim();
   const contactPerson = elements.leadContactPersonInput.value.trim();
@@ -254,7 +257,14 @@ elements.saveLeadButton.addEventListener("click", async () => {
   const notes = elements.leadNotesInput.value.trim();
 
   if (!name) {
-    setAppMessage("Please enter Business/Establishment name.");
+    setLeadFormError("Business / Establishment Name is required.");
+    elements.leadNameInput.focus();
+    return;
+  }
+
+  if (!location) {
+    setLeadFormError("Location is required.");
+    elements.leadLocationInput.focus();
     return;
   }
 
@@ -263,7 +273,7 @@ elements.saveLeadButton.addEventListener("click", async () => {
 
   const payload = {
     name,
-    location: location || "Kakinada",
+    location,
     contactPerson,
     phone,
     guardsRequired,
@@ -290,7 +300,7 @@ elements.saveLeadButton.addEventListener("click", async () => {
     closeLeadModal();
   } catch (error) {
     console.error("Save lead error:", error);
-    setAppMessage("Could not save lead. Check Firestore permissions.");
+    setLeadFormError("Could not save lead. Check Firestore permissions.");
   } finally {
     elements.saveLeadButton.disabled = false;
     elements.saveLeadButton.textContent = "Save Lead";
@@ -315,12 +325,18 @@ elements.followupModal.addEventListener("click", event => {
 });
 
 elements.saveFollowupButton.addEventListener("click", async () => {
+  setFollowupFormError("");
   const leadId = elements.followupModal.dataset.leadId;
   const status = elements.followupStatusSelect.value;
   const nextDate = elements.followupNextDateInput.value;
   const note = elements.followupNoteInput.value.trim();
 
   if (!leadId) return;
+
+  if (!note && !nextDate) {
+    setFollowupFormError("Please enter a follow-up note or next due date.");
+    return;
+  }
 
   elements.saveFollowupButton.disabled = true;
   elements.saveFollowupButton.textContent = "Saving...";
@@ -331,7 +347,7 @@ elements.saveFollowupButton.addEventListener("click", async () => {
     closeFollowupModal();
   } catch (error) {
     console.error("Record followup error:", error);
-    setAppMessage("Could not log follow-up.");
+    setFollowupFormError("Could not log follow-up.");
   } finally {
     elements.saveFollowupButton.disabled = false;
     elements.saveFollowupButton.textContent = "Save Record";

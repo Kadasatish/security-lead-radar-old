@@ -166,6 +166,7 @@
             <option value="NEW">New</option>
             <option value="CONTACTED">Contacted</option>
             <option value="FOLLOW_UP">Follow-Up</option>
+            <option value="INTERESTED">Interested</option>
             <option value="CONVERTED">Converted</option>
             <option value="LOST">Lost</option>
           </select>
@@ -225,6 +226,8 @@
         ＋ Security Opportunity
       </div>
 
+      <div id="leadFormError" class="form-error"></div>
+
       <div class="form-grid">
 
         <div class="input-group full-width">
@@ -233,7 +236,7 @@
         </div>
 
         <div class="input-group">
-          <label class="input-label">Location</label>
+          <label class="input-label">Location *</label>
           <input id="leadLocation" class="input" type="text" placeholder="e.g. Kakinada Main Road">
         </div>
 
@@ -297,6 +300,7 @@
             <option value="NEW" selected>NEW</option>
             <option value="CONTACTED">CONTACTED</option>
             <option value="FOLLOW_UP">FOLLOW_UP</option>
+            <option value="INTERESTED">INTERESTED</option>
             <option value="CONVERTED">CONVERTED</option>
             <option value="LOST">LOST</option>
           </select>
@@ -331,11 +335,14 @@
         📞 Log Follow-Up
       </div>
 
+      <div id="followupFormError" class="form-error"></div>
+
       <div class="input-group">
         <label class="input-label">Updated Lead Status</label>
         <select id="followupStatus" class="input">
           <option value="CONTACTED">CONTACTED</option>
           <option value="FOLLOW_UP" selected>FOLLOW_UP</option>
+          <option value="INTERESTED">INTERESTED</option>
           <option value="CONVERTED">CONVERTED (Won)</option>
           <option value="LOST">LOST</option>
         </select>
