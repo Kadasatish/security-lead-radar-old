@@ -4,6 +4,7 @@
 
 /**
  * Prompts user for current position via Geolocation API
+ * Uses high-accuracy first with 15s timeout, falling back to low-accuracy if needed.
  */
 export function getUserLocation() {
   return new Promise((resolve, reject) => {
@@ -12,35 +13,43 @@ export function getUserLocation() {
       return;
     }
 
-    navigator.geolocation.getCurrentPosition(
-      position => {
-        resolve({
-          lat: position.coords.latitude,
-          lon: position.coords.longitude,
-          accuracy: position.coords.accuracy
-        });
-      },
-      error => {
-        let msg = "Location access failed.";
-        switch (error.code) {
-          case error.PERMISSION_DENIED:
-            msg = "Location permission denied. Please allow location access to discover nearby businesses.";
-            break;
-          case error.POSITION_UNAVAILABLE:
-            msg = "Location information is unavailable. Check GPS/network.";
-            break;
-          case error.TIMEOUT:
-            msg = "Location request timed out. Please try again.";
-            break;
+    const tryGetPosition = (highAccuracy) => {
+      navigator.geolocation.getCurrentPosition(
+        position => {
+          resolve({
+            lat: position.coords.latitude,
+            lon: position.coords.longitude,
+            accuracy: position.coords.accuracy
+          });
+        },
+        error => {
+          if (error.code === error.PERMISSION_DENIED) {
+            reject(new Error("Location permission denied. Please allow location access to discover nearby businesses."));
+            return;
+          }
+
+          // If high accuracy failed/timed out, try low accuracy fallback
+          if (highAccuracy) {
+            console.warn("High accuracy geolocation timed out/failed. Trying standard accuracy...");
+            tryGetPosition(false);
+          } else {
+            let msg = "Location information is unavailable. Check GPS/network.";
+            if (error.code === error.TIMEOUT) {
+              msg = "Location request timed out. Please ensure GPS/location is enabled and try again.";
+            }
+            reject(new Error(msg));
+          }
+        },
+        {
+          enableHighAccuracy: highAccuracy,
+          timeout: 15000,
+          maximumAge: 60000
         }
-        reject(new Error(msg));
-      },
-      {
-        enableHighAccuracy: true,
-        timeout: 10000,
-        maximumAge: 60000
-      }
-    );
+      );
+    };
+
+    // First attempt with high accuracy
+    tryGetPosition(true);
   });
 }
 
@@ -99,14 +108,14 @@ export function categorizeOsmPlace(tags = {}) {
 }
 
 /**
- * Fetch nearby places from OpenStreetMap Overpass API
+ * Fetch nearby places from OpenStreetMap Overpass API with multi-endpoint fallback
  */
 export async function fetchNearbyPlacesOSM(lat, lon, radiusKm = 3) {
   const radiusMeters = radiusKm * 1000;
 
-  // Overpass QL Query for relevant security prospect establishments
+  // Overpass QL Query for security prospect establishments
   const query = `
-    [out:json][timeout:15];
+    [out:json][timeout:25];
     (
       node["amenity"~"hospital|school|college|university|bank|restaurant|hotel|fuel"](around:${radiusMeters},${lat},${lon});
       node["tourism"~"hotel|motel|hostel|guest_house"](around:${radiusMeters},${lat},${lon});
@@ -119,23 +128,43 @@ export async function fetchNearbyPlacesOSM(lat, lon, radiusKm = 3) {
     out center 60;
   `;
 
-  const overpassUrl = "https://overpass-api.de/api/interpreter";
+  // List of public Overpass API endpoints for fallback resilience
+  const ENDPOINTS = [
+    "https://overpass-api.de/api/interpreter",
+    "https://overpass.kumi.systems/api/interpreter",
+    "https://overpass.nchc.org.tw/api/interpreter"
+  ];
 
-  const response = await fetch(overpassUrl, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/x-www-form-urlencoded"
-    },
-    body: "data=" + encodeURIComponent(query)
-  });
+  let lastError = null;
+  let data = null;
 
-  if (!response.ok) {
-    throw new Error(`Map data server responded with status ${response.status}`);
+  for (const endpoint of ENDPOINTS) {
+    try {
+      const response = await fetch(endpoint, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded"
+        },
+        body: "data=" + encodeURIComponent(query)
+      });
+
+      if (response.ok) {
+        data = await response.json();
+        break; // Successfully received data
+      } else {
+        console.warn(`Overpass endpoint ${endpoint} returned HTTP ${response.status}`);
+      }
+    } catch (err) {
+      console.warn(`Overpass endpoint ${endpoint} fetch error:`, err);
+      lastError = err;
+    }
   }
 
-  const result = await response.json();
-  const elements = result.elements || [];
+  if (!data) {
+    throw new Error("Nearby service temporarily unavailable. Please try again in a few moments.");
+  }
 
+  const elements = data.elements || [];
   const places = [];
   const seenNames = new Set();
 
@@ -155,7 +184,6 @@ export async function fetchNearbyPlacesOSM(lat, lon, radiusKm = 3) {
     const distKm = calculateDistanceKm(lat, lon, placeLat, placeLon);
     const category = categorizeOsmPlace(tags);
 
-    // Format location / address string
     let locationStr = tags["addr:street"] || tags["addr:suburb"] || tags["addr:city"] || tags["addr:full"] || "";
     if (tags["addr:housenumber"]) {
       locationStr = `${tags["addr:housenumber"]} ${locationStr}`.trim();
@@ -176,9 +204,7 @@ export async function fetchNearbyPlacesOSM(lat, lon, radiusKm = 3) {
     });
   });
 
-  // Sort by distance ascending
   places.sort((a, b) => a.distanceKm - b.distanceKm);
-
   return places;
 }
 
@@ -206,12 +232,10 @@ export function findDuplicateLead(placeName, placeLocation, existingLeads = []) 
 
     if (!lName) return false;
 
-    // Direct name match or substring match
     if (lName === pName || lName.includes(pName) || pName.includes(lName)) {
       return true;
     }
 
-    // Location match if both have detailed location
     if (pLoc && lLoc && pLoc.length > 5 && lLoc.length > 5 && (lLoc.includes(pLoc) || pLoc.includes(lLoc))) {
       return true;
     }
