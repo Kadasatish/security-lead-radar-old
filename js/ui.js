@@ -57,8 +57,8 @@ export const elements = {
   // Search & Filters
   searchInput: document.getElementById("searchInput"),
   statusFilter: document.getElementById("statusFilter"),
+  followupFilter: document.getElementById("followupFilter"),
   priorityPills: document.querySelectorAll(".filter-pill[data-priority]"),
-  dueOnlyToggle: document.getElementById("dueOnlyToggle"),
 
   // Lead Form Inputs
   leadNameInput: document.getElementById("leadName"),

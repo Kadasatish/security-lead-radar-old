@@ -73,7 +73,7 @@ let filterState = {
   searchQuery: "",
   priority: "ALL",
   status: "ALL",
-  dueOnly: false
+  followupFilter: "ALL"
 };
 
 /* =========================
@@ -407,9 +407,24 @@ function applyFiltersAndRender() {
     filtered = filtered.filter(l => l.status === filterState.status);
   }
 
-  // Due Only filter
-  if (filterState.dueOnly) {
-    filtered = filtered.filter(l => l.followupDate && (l.status !== "WON" && l.status !== "CONVERTED" && l.status !== "LOST"));
+  // Follow-Up Classification filter
+  if (filterState.followupFilter !== "ALL") {
+    filtered = filtered.filter(l => {
+      const todayStr = new Date().toISOString().split("T")[0];
+      if (!l.followupDate || l.status === "WON" || l.status === "CONVERTED" || l.status === "LOST") {
+        return false;
+      }
+      if (filterState.followupFilter === "DUE_TODAY") {
+        return l.followupDate === todayStr;
+      }
+      if (filterState.followupFilter === "OVERDUE") {
+        return l.followupDate < todayStr;
+      }
+      if (filterState.followupFilter === "UPCOMING") {
+        return l.followupDate > todayStr;
+      }
+      return true;
+    });
   }
 
   renderLeadsList(filtered, {
@@ -448,11 +463,10 @@ if (elements.statusFilter) {
   });
 }
 
-// Due Only Toggle
-if (elements.dueOnlyToggle) {
-  elements.dueOnlyToggle.addEventListener("click", () => {
-    filterState.dueOnly = !filterState.dueOnly;
-    elements.dueOnlyToggle.classList.toggle("active", filterState.dueOnly);
+// Follow-Up Filter Select Listener
+if (elements.followupFilter) {
+  elements.followupFilter.addEventListener("change", e => {
+    filterState.followupFilter = e.target.value;
     applyFiltersAndRender();
   });
 }
