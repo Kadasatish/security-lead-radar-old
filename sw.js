@@ -1,46 +1,48 @@
-const CACHE_NAME = "security-lead-radar-v6";
-
-const APP_FILES = [
-  "./",
-  "./index.html",
-  "./style.css",
-  "./manifest.json",
-  "./firebase.js",
-  "./js/app.js",
-  "./js/auth.js",
-  "./js/leads.js",
-  "./js/ui.js",
-  "./js/location.js"
+const CACHE_NAME = 'satish-lead-radar-v7';
+const ASSETS_TO_CACHE = [
+  './',
+  './index.html',
+  './style.css',
+  './firebase.js',
+  './js/app.js',
+  './js/auth.js',
+  './js/leads.js',
+  './js/ui.js',
+  './js/location.js',
+  './manifest.json'
 ];
 
-self.addEventListener("install", event => {
+// Install Event
+self.addEventListener('install', event => {
   event.waitUntil(
     caches.open(CACHE_NAME).then(cache => {
-      return cache.addAll(APP_FILES);
+      return cache.addAll(ASSETS_TO_CACHE);
     })
   );
-
   self.skipWaiting();
 });
 
-self.addEventListener("activate", event => {
+// Activate Event
+self.addEventListener('activate', event => {
   event.waitUntil(
-    caches.keys().then(keys =>
-      Promise.all(
-        keys
-          .filter(key => key !== CACHE_NAME)
-          .map(key => caches.delete(key))
-      )
-    )
+    caches.keys().then(cacheNames => {
+      return Promise.all(
+        cacheNames.map(cache => {
+          if (cache !== CACHE_NAME) {
+            return caches.delete(cache);
+          }
+        })
+      );
+    })
   );
-
   self.clients.claim();
 });
 
-self.addEventListener("fetch", event => {
+// Fetch Event
+self.addEventListener('fetch', event => {
   event.respondWith(
-    caches.match(event.request).then(cachedResponse => {
-      return cachedResponse || fetch(event.request);
+    caches.match(event.request).then(response => {
+      return response || fetch(event.request);
     })
   );
 });

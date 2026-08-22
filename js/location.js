@@ -24,18 +24,18 @@ export function getUserLocation() {
         },
         error => {
           if (error.code === error.PERMISSION_DENIED) {
-            reject(new Error("Location permission denied. Please allow location access to discover nearby businesses."));
+            reject(new Error("Location permission denied. Please allow location access in your browser settings to discover nearby businesses."));
             return;
           }
 
           // If high accuracy failed/timed out, try low accuracy fallback
           if (highAccuracy) {
-            console.warn("High accuracy geolocation timed out/failed. Trying standard accuracy...");
+            console.warn("High accuracy geolocation timed out or unavailable. Trying standard accuracy...");
             tryGetPosition(false);
           } else {
-            let msg = "Location information is unavailable. Check GPS/network.";
+            let msg = "Location information is unavailable. Please check device GPS and network connection.";
             if (error.code === error.TIMEOUT) {
-              msg = "Location request timed out. Please ensure GPS/location is enabled and try again.";
+              msg = "Location request timed out. Please ensure GPS/location is turned on and try again.";
             }
             reject(new Error(msg));
           }
@@ -128,40 +128,60 @@ export async function fetchNearbyPlacesOSM(lat, lon, radiusKm = 3) {
     out center 60;
   `;
 
-  // List of public Overpass API endpoints for fallback resilience
+  // Resilient array of public Overpass API endpoints for fallback resilience
   const ENDPOINTS = [
+    "https://maps.mail.ru/osm/tools/overpass/api/interpreter",
     "https://overpass-api.de/api/interpreter",
     "https://overpass.kumi.systems/api/interpreter",
-    "https://overpass.nchc.org.tw/api/interpreter"
+    "https://overpass.nchc.org.tw/api/interpreter",
+    "https://overpass.private.coffee/api/interpreter"
   ];
 
-  let lastError = null;
   let data = null;
+  let lastErrorType = "network"; // "timeout", "http", "network", "empty"
 
   for (const endpoint of ENDPOINTS) {
     try {
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 12000);
+
       const response = await fetch(endpoint, {
         method: "POST",
         headers: {
           "Content-Type": "application/x-www-form-urlencoded"
         },
-        body: "data=" + encodeURIComponent(query)
+        body: "data=" + encodeURIComponent(query),
+        signal: controller.signal
       });
+
+      clearTimeout(timeoutId);
 
       if (response.ok) {
         data = await response.json();
         break; // Successfully received data
       } else {
         console.warn(`Overpass endpoint ${endpoint} returned HTTP ${response.status}`);
+        lastErrorType = "http";
       }
     } catch (err) {
-      console.warn(`Overpass endpoint ${endpoint} fetch error:`, err);
-      lastError = err;
+      if (err.name === "AbortError") {
+        console.warn(`Overpass endpoint ${endpoint} timed out after 12s.`);
+        lastErrorType = "timeout";
+      } else {
+        console.warn(`Overpass endpoint ${endpoint} fetch error:`, err);
+        lastErrorType = "network";
+      }
     }
   }
 
   if (!data) {
-    throw new Error("Nearby service temporarily unavailable. Please try again in a few moments.");
+    if (lastErrorType === "timeout") {
+      throw new Error("Nearby search timed out. The OpenStreetMap service is taking too long to respond. Please try again.");
+    } else if (lastErrorType === "http") {
+      throw new Error("Overpass server returned an HTTP error. Please try again in a few moments.");
+    } else {
+      throw new Error("Network error connecting to nearby location service. Please check your internet connection.");
+    }
   }
 
   const elements = data.elements || [];
