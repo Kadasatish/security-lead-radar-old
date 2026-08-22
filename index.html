@@ -101,6 +101,7 @@
 
         <div class="header-actions">
           <button id="appThemeToggleBtn" class="btn-theme-toggle" title="Toggle Theme">🌙 Dark</button>
+          <button id="nearbyBtn" class="btn-header-action btn-nearby" title="Nearby Businesses Discovery">📍 Nearby</button>
           <button id="profileBtn" class="btn-header-action" title="Company Profile">🏢 Profile</button>
           <button id="supportBtn" class="btn-header-action btn-support" title="Satish Support">📞 Support</button>
           <button id="logoutButton" class="logout-button">Logout</button>
@@ -512,6 +513,88 @@
 
   </div>
 
+
+  <!-- =========================
+       NEARBY BUSINESSES DISCOVERY MODAL (PHASE 5)
+  ========================== -->
+
+  <div id="nearbyModal" class="modal hidden">
+
+    <div class="modal-card modal-card-large">
+
+      <div class="modal-title-row">
+        <div class="modal-title">📍 Nearby Businesses</div>
+        <button id="closeNearbyButton" class="btn-icon-close">✕</button>
+      </div>
+
+      <div class="location-status-bar" id="locationStatusBar">
+        <span id="locationStatusText">📍 Geolocation required to discover prospects</span>
+        <button id="refreshLocationBtn" class="btn-small-refresh">🔄 Refresh Location</button>
+      </div>
+
+      <div id="nearbyError" class="form-error" style="margin-bottom:10px;"></div>
+
+      <!-- DISTANCE FILTERS -->
+      <div class="filter-group">
+        <div class="filter-group-label">Radius:</div>
+        <div class="filter-row">
+          <button class="filter-pill nearby-dist-pill" data-km="1">1 km</button>
+          <button class="filter-pill nearby-dist-pill active" data-km="3">3 km</button>
+          <button class="filter-pill nearby-dist-pill" data-km="5">5 km</button>
+          <button class="filter-pill nearby-dist-pill" data-km="10">10 km</button>
+        </div>
+      </div>
+
+      <!-- CATEGORY FILTERS -->
+      <div class="filter-group" style="margin-top:8px;">
+        <div class="filter-group-label">Category:</div>
+        <div class="filter-row">
+          <button class="filter-pill nearby-cat-pill active" data-cat="ALL">All</button>
+          <button class="filter-pill nearby-cat-pill" data-cat="Hotels">Hotels</button>
+          <button class="filter-pill nearby-cat-pill" data-cat="Hospitals">Hospitals</button>
+          <button class="filter-pill nearby-cat-pill" data-cat="Schools">Schools</button>
+          <button class="filter-pill nearby-cat-pill" data-cat="Apartments">Apartments</button>
+          <button class="filter-pill nearby-cat-pill" data-cat="Commercial">Commercial</button>
+          <button class="filter-pill nearby-cat-pill" data-cat="Industrial">Industrial</button>
+        </div>
+      </div>
+
+      <!-- NEARBY RESULTS LIST -->
+      <div id="nearbyResultsContainer" class="nearby-results-container" style="margin-top:14px;">
+        <div class="empty-card">
+          Click <strong>"🔄 Refresh Location"</strong> or <strong>"📍 Nearby"</strong> to search nearby establishments.
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+  <!-- =========================
+       DUPLICATE LEAD WARNING DIALOG
+  ========================== -->
+
+  <div id="duplicateModal" class="modal hidden" style="z-index: 120;">
+
+    <div class="modal-card">
+
+      <div class="modal-title" style="color:var(--accent-warm);">
+        ⚠️ Likely Duplicate Lead
+      </div>
+
+      <div id="duplicateModalText" style="font-size:14px; color:var(--text-secondary); margin-bottom:16px;">
+        A lead with a similar business name or location already exists in your radar.
+      </div>
+
+      <div class="modal-buttons" style="flex-direction:column; gap:8px;">
+        <button id="viewExistingLeadBtn" class="btn-primary">View Existing Lead</button>
+        <button id="proceedAddLeadBtn" class="btn-secondary">Proceed & Add Anyway</button>
+        <button id="cancelDuplicateBtn" class="btn-secondary" style="border:none; color:var(--text-muted);">Cancel</button>
+      </div>
+
+    </div>
+
+  </div>
 
   <!-- =========================
        APPLICATION SCRIPT MODULE

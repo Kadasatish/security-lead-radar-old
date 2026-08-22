@@ -1,4 +1,4 @@
-const CACHE_NAME = "security-lead-radar-v5";
+const CACHE_NAME = "security-lead-radar-v6";
 
 const APP_FILES = [
   "./",
@@ -9,7 +9,8 @@ const APP_FILES = [
   "./js/app.js",
   "./js/auth.js",
   "./js/leads.js",
-  "./js/ui.js"
+  "./js/ui.js",
+  "./js/location.js"
 ];
 
 self.addEventListener("install", event => {

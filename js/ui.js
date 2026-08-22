@@ -98,8 +98,136 @@ export const elements = {
   detailHistoryList: document.getElementById("detailHistoryList"),
 
   // Profile Form Input
-  companyNameInput: document.getElementById("companyNameInput")
+  companyNameInput: document.getElementById("companyNameInput"),
+
+  // Nearby Discovery Elements (Phase 5)
+  nearbyBtn: document.getElementById("nearbyBtn"),
+  nearbyModal: document.getElementById("nearbyModal"),
+  closeNearbyButton: document.getElementById("closeNearbyButton"),
+  refreshLocationBtn: document.getElementById("refreshLocationBtn"),
+  locationStatusText: document.getElementById("locationStatusText"),
+  nearbyError: document.getElementById("nearbyError"),
+  nearbyResultsContainer: document.getElementById("nearbyResultsContainer"),
+  nearbyDistPills: document.querySelectorAll(".nearby-dist-pill"),
+  nearbyCatPills: document.querySelectorAll(".nearby-cat-pill"),
+
+  // Duplicate Warning Elements
+  duplicateModal: document.getElementById("duplicateModal"),
+  duplicateModalText: document.getElementById("duplicateModalText"),
+  viewExistingLeadBtn: document.getElementById("viewExistingLeadBtn"),
+  proceedAddLeadBtn: document.getElementById("proceedAddLeadBtn"),
+  cancelDuplicateBtn: document.getElementById("cancelDuplicateBtn")
 };
+
+/* =========================
+   NEARBY BUSINESS DISCOVERY UI
+========================== */
+export function openNearbyModal() {
+  setNearbyError("");
+  if (elements.nearbyModal) elements.nearbyModal.classList.remove("hidden");
+}
+
+export function closeNearbyModal() {
+  setNearbyError("");
+  if (elements.nearbyModal) elements.nearbyModal.classList.add("hidden");
+}
+
+export function setNearbyError(msg) {
+  if (elements.nearbyError) elements.nearbyError.textContent = msg;
+}
+
+export function setLocationStatus(msg) {
+  if (elements.locationStatusText) elements.locationStatusText.textContent = msg;
+}
+
+export function openDuplicateModal(place, existingLead) {
+  if (elements.duplicateModalText) {
+    elements.duplicateModalText.innerHTML = `
+      <strong>"${escapeHtml(place.name)}"</strong> looks like a potential duplicate of an existing lead:<br><br>
+      📌 <strong>${escapeHtml(existingLead.name || "Existing Lead")}</strong> (${escapeHtml(existingLead.location || "Kakinada")})<br>
+      Status: ${escapeHtml(existingLead.status || "NEW")}
+    `;
+  }
+  if (elements.duplicateModal) elements.duplicateModal.classList.remove("hidden");
+}
+
+export function closeDuplicateModal() {
+  if (elements.duplicateModal) elements.duplicateModal.classList.add("hidden");
+}
+
+export function renderNearbyPlaces(places, { onAddAsLead, onOpenMap }) {
+  elements.nearbyResultsContainer.innerHTML = "";
+
+  if (!places || places.length === 0) {
+    const empty = document.createElement("div");
+    empty.className = "empty-card";
+    empty.innerHTML = `
+      🔍 No matching establishments found within selected distance.<br><br>
+      Try expanding the distance radius (e.g. 5 km or 10 km) or selecting "All" categories.
+    `;
+    elements.nearbyResultsContainer.appendChild(empty);
+    return;
+  }
+
+  places.forEach(place => {
+    const card = document.createElement("div");
+    card.className = "lead-card nearby-card";
+
+    const top = document.createElement("div");
+    top.className = "lead-top";
+
+    const name = document.createElement("div");
+    name.className = "lead-name";
+    name.textContent = place.name;
+
+    const badges = document.createElement("div");
+    badges.className = "badges";
+
+    const catBadge = document.createElement("span");
+    catBadge.className = "badge badge-NEW";
+    catBadge.textContent = place.category;
+
+    const distBadge = document.createElement("span");
+    distBadge.className = "badge badge-WATCH";
+    distBadge.textContent = `${place.distanceKm.toFixed(2)} km`;
+
+    badges.appendChild(catBadge);
+    badges.appendChild(distBadge);
+
+    top.appendChild(name);
+    top.appendChild(badges);
+
+    const loc = document.createElement("div");
+    loc.className = "lead-contact";
+    loc.style.marginTop = "6px";
+    loc.textContent = `📍 ${place.location}`;
+
+    const commRow = document.createElement("div");
+    commRow.className = "quick-comm-row";
+
+    const mapBtn = document.createElement("button");
+    mapBtn.className = "btn-comm btn-details";
+    mapBtn.innerHTML = "🗺️ Map";
+    mapBtn.addEventListener("click", () => onOpenMap(place));
+
+    const addLeadBtn = document.createElement("button");
+    addLeadBtn.className = "btn-comm btn-call";
+    addLeadBtn.style.background = "var(--text-primary)";
+    addLeadBtn.style.color = "var(--bg-primary)";
+    addLeadBtn.style.border = "none";
+    addLeadBtn.innerHTML = "＋ Add as Lead";
+    addLeadBtn.addEventListener("click", () => onAddAsLead(place));
+
+    commRow.appendChild(mapBtn);
+    commRow.appendChild(addLeadBtn);
+
+    card.appendChild(top);
+    card.appendChild(loc);
+    card.appendChild(commRow);
+
+    elements.nearbyResultsContainer.appendChild(card);
+  });
+}
 
 /* =========================
    THEME MANAGER

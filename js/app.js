@@ -17,6 +17,13 @@ import {
 } from "./leads.js";
 
 import {
+  getUserLocation,
+  fetchNearbyPlacesOSM,
+  getMapLink,
+  findDuplicateLead
+} from "./location.js";
+
+import {
   elements,
   showAppScreen,
   showLoginScreen,
@@ -41,10 +48,23 @@ import {
   closeProfileModal,
   setProfileFormError,
   openSupportModal,
-  closeSupportModal
+  closeSupportModal,
+  openNearbyModal,
+  closeNearbyModal,
+  setNearbyError,
+  setLocationStatus,
+  renderNearbyPlaces,
+  openDuplicateModal,
+  closeDuplicateModal
 } from "./ui.js";
 
 let rawLeads = [];
+let userCoords = null;
+let rawNearbyPlaces = [];
+let nearbyDistKm = 3;
+let nearbyCat = "ALL";
+let pendingPlaceToAdd = null;
+let duplicateLeadFound = null;
 let unsubscribeLeads = null;
 let currentUser = null;
 let currentProfile = null;
@@ -128,6 +148,160 @@ if (elements.profileModal) {
   elements.profileModal.addEventListener("click", event => {
     if (event.target === elements.profileModal) {
       closeProfileModal();
+    }
+  });
+}
+
+/* =========================
+   NEARBY BUSINESSES DISCOVERY (PHASE 5)
+========================== */
+if (elements.nearbyBtn) {
+  elements.nearbyBtn.addEventListener("click", () => {
+    openNearbyModal();
+    if (!userCoords) {
+      loadNearbyPlaces();
+    }
+  });
+}
+
+if (elements.closeNearbyButton) {
+  elements.closeNearbyButton.addEventListener("click", () => {
+    closeNearbyModal();
+  });
+}
+
+if (elements.nearbyModal) {
+  elements.nearbyModal.addEventListener("click", event => {
+    if (event.target === elements.nearbyModal) {
+      closeNearbyModal();
+    }
+  });
+}
+
+if (elements.refreshLocationBtn) {
+  elements.refreshLocationBtn.addEventListener("click", () => {
+    loadNearbyPlaces();
+  });
+}
+
+async function loadNearbyPlaces() {
+  setNearbyError("");
+  setLocationStatus("📍 Requesting GPS position...");
+
+  try {
+    userCoords = await getUserLocation();
+    setLocationStatus(`📍 Position acquired (${userCoords.lat.toFixed(4)}, ${userCoords.lon.toFixed(4)}). Searching nearby prospects...`);
+
+    const places = await fetchNearbyPlacesOSM(userCoords.lat, userCoords.lon, nearbyDistKm);
+    rawNearbyPlaces = places;
+    setLocationStatus(`📍 Found ${places.length} establishments within ${nearbyDistKm} km.`);
+    applyNearbyFiltersAndRender();
+  } catch (err) {
+    console.error("Location discovery error:", err);
+    setLocationStatus("📍 Geolocation required for nearby discovery.");
+    setNearbyError(err.message || "Could not fetch nearby places.");
+  }
+}
+
+function applyNearbyFiltersAndRender() {
+  let filtered = [...rawNearbyPlaces];
+
+  if (nearbyCat !== "ALL") {
+    filtered = filtered.filter(p => p.category === nearbyCat);
+  }
+
+  renderNearbyPlaces(filtered, {
+    onAddAsLead: handleAddNearbyAsLead,
+    onOpenMap: handleOpenMap
+  });
+}
+
+// Distance Pills Listener
+if (elements.nearbyDistPills) {
+  elements.nearbyDistPills.forEach(pill => {
+    pill.addEventListener("click", () => {
+      elements.nearbyDistPills.forEach(p => p.classList.remove("active"));
+      pill.classList.add("active");
+      nearbyDistKm = parseInt(pill.dataset.km, 10) || 3;
+      if (userCoords) {
+        loadNearbyPlaces();
+      }
+    });
+  });
+}
+
+// Category Pills Listener
+if (elements.nearbyCatPills) {
+  elements.nearbyCatPills.forEach(pill => {
+    pill.addEventListener("click", () => {
+      elements.nearbyCatPills.forEach(p => p.classList.remove("active"));
+      pill.classList.add("active");
+      nearbyCat = pill.dataset.cat || "ALL";
+      applyNearbyFiltersAndRender();
+    });
+  });
+}
+
+function handleOpenMap(place) {
+  const url = getMapLink(place.lat, place.lon, place.name);
+  window.open(url, "_blank", "noopener,noreferrer");
+}
+
+function handleAddNearbyAsLead(place) {
+  const duplicate = findDuplicateLead(place.name, place.location, rawLeads);
+
+  if (duplicate) {
+    pendingPlaceToAdd = place;
+    duplicateLeadFound = duplicate;
+    openDuplicateModal(place, duplicate);
+  } else {
+    openAddLeadFromPlace(place);
+  }
+}
+
+function openAddLeadFromPlace(place) {
+  closeNearbyModal();
+
+  // Reset form completely first
+  openLeadModal(null);
+
+  // Pre-fill ONLY name and location
+  if (elements.leadNameInput) elements.leadNameInput.value = place.name || "";
+  if (elements.leadLocationInput) elements.leadLocationInput.value = place.location || "";
+}
+
+// DUPLICATE MODAL LISTENERS
+if (elements.viewExistingLeadBtn) {
+  elements.viewExistingLeadBtn.addEventListener("click", () => {
+    closeDuplicateModal();
+    closeNearbyModal();
+    if (duplicateLeadFound) {
+      openDetailsModal(duplicateLeadFound);
+    }
+  });
+}
+
+if (elements.proceedAddLeadBtn) {
+  elements.proceedAddLeadBtn.addEventListener("click", () => {
+    closeDuplicateModal();
+    if (pendingPlaceToAdd) {
+      openAddLeadFromPlace(pendingPlaceToAdd);
+    }
+  });
+}
+
+if (elements.cancelDuplicateBtn) {
+  elements.cancelDuplicateBtn.addEventListener("click", () => {
+    closeDuplicateModal();
+    pendingPlaceToAdd = null;
+    duplicateLeadFound = null;
+  });
+}
+
+if (elements.duplicateModal) {
+  elements.duplicateModal.addEventListener("click", event => {
+    if (event.target === elements.duplicateModal) {
+      closeDuplicateModal();
     }
   });
 }
