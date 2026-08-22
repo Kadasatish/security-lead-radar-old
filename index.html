@@ -119,28 +119,33 @@
       <section class="stats-grid">
 
         <div class="stat-card">
+          <div class="stat-number" id="totalLeadsCount">0</div>
+          <div class="stat-label">Total Leads</div>
+        </div>
+
+        <div class="stat-card">
           <div class="stat-number" id="activeCount">0</div>
           <div class="stat-label">Active Leads</div>
         </div>
 
         <div class="stat-card">
-          <div class="stat-number stat-hot" id="hotCount">0</div>
-          <div class="stat-label">🔥 Hot Leads</div>
-        </div>
-
-        <div class="stat-card">
-          <div class="stat-number stat-warm" id="warmCount">0</div>
-          <div class="stat-label">🟡 Warm Leads</div>
-        </div>
-
-        <div class="stat-card">
-          <div class="stat-number stat-watch" id="watchCount">0</div>
-          <div class="stat-label">⚪ Watch</div>
-        </div>
-
-        <div class="stat-card">
           <div class="stat-number stat-due" id="dueCount">0</div>
-          <div class="stat-label">📅 Follow-ups Due</div>
+          <div class="stat-label">📅 Due Today</div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-number stat-hot" id="overdueCount">0</div>
+          <div class="stat-label">⚠️ Overdue</div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-number stat-warm" id="wonCount">0</div>
+          <div class="stat-label">🏆 Won</div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-number stat-watch" id="lostCount">0</div>
+          <div class="stat-label">❌ Lost</div>
         </div>
 
         <div class="stat-card">
@@ -177,8 +182,7 @@
             <option value="NEW">New</option>
             <option value="CONTACTED">Contacted</option>
             <option value="FOLLOW_UP">Follow-Up</option>
-            <option value="INTERESTED">Interested</option>
-            <option value="CONVERTED">Converted</option>
+            <option value="WON">Won</option>
             <option value="LOST">Lost</option>
           </select>
 
@@ -315,8 +319,7 @@
             <option value="NEW">NEW</option>
             <option value="CONTACTED">CONTACTED</option>
             <option value="FOLLOW_UP">FOLLOW_UP</option>
-            <option value="INTERESTED">INTERESTED</option>
-            <option value="CONVERTED">CONVERTED</option>
+            <option value="WON">WON</option>
             <option value="LOST">LOST</option>
           </select>
         </div>
@@ -355,12 +358,24 @@
       <div class="input-group">
         <label class="input-label">Updated Lead Status</label>
         <select id="followupStatus" class="input">
+          <option value="NEW">NEW</option>
           <option value="CONTACTED">CONTACTED</option>
           <option value="FOLLOW_UP" selected>FOLLOW_UP</option>
-          <option value="INTERESTED">INTERESTED</option>
-          <option value="CONVERTED">CONVERTED (Won)</option>
+          <option value="WON">WON</option>
           <option value="LOST">LOST</option>
         </select>
+      </div>
+
+      <div class="form-grid" style="grid-template-columns: 1fr 1fr; gap: 10px;">
+        <div class="input-group">
+          <label class="input-label">Follow-Up Date</label>
+          <input id="followupDate" class="input" type="date">
+        </div>
+
+        <div class="input-group">
+          <label class="input-label">Follow-Up Time</label>
+          <input id="followupTime" class="input" type="time">
+        </div>
       </div>
 
       <div class="input-group">
@@ -411,8 +426,7 @@
           <option value="NEW">NEW</option>
           <option value="CONTACTED">CONTACTED</option>
           <option value="FOLLOW_UP">FOLLOW_UP</option>
-          <option value="INTERESTED">INTERESTED</option>
-          <option value="CONVERTED">CONVERTED</option>
+          <option value="WON">WON</option>
           <option value="LOST">LOST</option>
         </select>
       </div>

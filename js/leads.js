@@ -53,21 +53,29 @@ export function deleteLead(id) {
   return deleteDoc(doc(db, "leads", id));
 }
 
-export function recordFollowup(id, { note, nextDate, status }) {
+export function recordFollowup(id, { note, nextDate, followupDate, followupTime, status }) {
+  const todayStr = new Date().toISOString().split("T")[0];
+  const nowTimeStr = new Date().toTimeString().slice(0, 5);
+
   const logEntry = {
     note: note || "",
+    date: followupDate || todayStr,
+    time: followupTime || nowTimeStr,
     nextDate: nextDate || "",
     status: status || "",
     timestamp: new Date().toISOString()
   };
 
   const updatePayload = {
-    status: status,
     updatedAt: serverTimestamp(),
     followupHistory: arrayUnion(logEntry)
   };
 
-  if (nextDate) {
+  if (status) {
+    updatePayload.status = status;
+  }
+
+  if (nextDate !== undefined) {
     updatePayload.followupDate = nextDate;
   }
 

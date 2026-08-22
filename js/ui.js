@@ -45,11 +45,12 @@ export const elements = {
   leadsContainer: document.getElementById("leadsContainer"),
 
   // Stats Counters
+  totalLeadsCount: document.getElementById("totalLeadsCount"),
   activeCount: document.getElementById("activeCount"),
-  hotCount: document.getElementById("hotCount"),
-  warmCount: document.getElementById("warmCount"),
-  watchCount: document.getElementById("watchCount"),
   dueCount: document.getElementById("dueCount"),
+  overdueCount: document.getElementById("overdueCount"),
+  wonCount: document.getElementById("wonCount"),
+  lostCount: document.getElementById("lostCount"),
   guardsCount: document.getElementById("guardsCount"),
   totalCount: document.getElementById("totalCount"),
 
@@ -76,6 +77,8 @@ export const elements = {
   // Follow-up Form Inputs
   followupLeadTitle: document.getElementById("followupLeadTitle"),
   followupStatusSelect: document.getElementById("followupStatus"),
+  followupDateInput: document.getElementById("followupDate"),
+  followupTimeInput: document.getElementById("followupTime"),
   followupNextDateInput: document.getElementById("followupNextDate"),
   followupNoteInput: document.getElementById("followupNote"),
   followupHistoryList: document.getElementById("followupHistoryList"),
@@ -391,8 +394,14 @@ export function openFollowupModal(lead) {
   elements.followupModal.dataset.leadId = lead.id;
   elements.followupLeadTitle.textContent = `📞 Follow-Up: ${lead.name || "Lead"}`;
   elements.followupStatusSelect.value = lead.status || "FOLLOW_UP";
-  elements.followupNextDateInput.value = lead.followupDate || "";
-  elements.followupNoteInput.value = "";
+
+  const todayStr = new Date().toISOString().split("T")[0];
+  const nowTimeStr = new Date().toTimeString().slice(0, 5);
+
+  if (elements.followupDateInput) elements.followupDateInput.value = todayStr;
+  if (elements.followupTimeInput) elements.followupTimeInput.value = nowTimeStr;
+  if (elements.followupNextDateInput) elements.followupNextDateInput.value = lead.followupDate || "";
+  if (elements.followupNoteInput) elements.followupNoteInput.value = "";
 
   renderFollowupHistory(lead.followupHistory || [], elements.followupHistoryList);
   elements.followupModal.classList.remove("hidden");
@@ -440,7 +449,9 @@ export function closeDetailsModal() {
 }
 
 function renderFollowupHistory(history, container) {
+  if (!container) return;
   container.innerHTML = "";
+
   if (!history || history.length === 0) {
     container.innerHTML =
       '<div class="timeline-note" style="color:var(--text-muted);">No follow-up records yet.</div>';
@@ -452,51 +463,80 @@ function renderFollowupHistory(history, container) {
     const div = document.createElement("div");
     div.className = "timeline-item";
 
-    const dateStr = item.timestamp
-      ? new Date(item.timestamp).toLocaleDateString("en-IN", {
-          day: "numeric",
-          month: "short",
-          year: "numeric"
-        })
-      : "Earlier";
+    let dateDisplay = item.date || "";
+    if (item.time) {
+      dateDisplay += ` at ${item.time}`;
+    }
+    if (!dateDisplay && item.timestamp) {
+      dateDisplay = new Date(item.timestamp).toLocaleDateString("en-IN", {
+        day: "numeric",
+        month: "short",
+        year: "numeric"
+      });
+    }
 
     div.innerHTML = `
-      <div class="timeline-date">${dateStr} — ${item.status || "Updated"}</div>
+      <div class="timeline-date">${escapeHtml(dateDisplay)} — Status: ${escapeHtml(item.status || "FOLLOW_UP")}</div>
       <div class="timeline-note">${escapeHtml(item.note || "No note recorded")}</div>
-      ${item.nextDate ? `<div style="color:var(--accent-blue);font-size:11px;margin-top:2px;">Next Due: ${item.nextDate}</div>` : ""}
+      ${item.nextDate ? `<div style="color:var(--accent-blue);font-size:11px;margin-top:2px;">📅 Next Follow-up: ${escapeHtml(item.nextDate)}</div>` : ""}
     `;
     container.appendChild(div);
   });
 }
 
-export function isFollowupDue(lead) {
-  if (!lead.followupDate || lead.status === "CONVERTED" || lead.status === "LOST") {
-    return false;
+export function getFollowupClassification(lead) {
+  if (!lead.followupDate || lead.status === "WON" || lead.status === "CONVERTED" || lead.status === "LOST") {
+    return { status: "NONE", label: "" };
   }
+
   const todayStr = new Date().toISOString().split("T")[0];
-  return lead.followupDate <= todayStr;
+  const dueTime = new Date(lead.followupDate).getTime();
+  const todayTime = new Date(todayStr).getTime();
+  const diffDays = Math.floor((todayTime - dueTime) / (1000 * 3600 * 24));
+
+  if (lead.followupDate === todayStr) {
+    return { status: "DUE_TODAY", label: "📅 Follow-up: Today" };
+  } else if (lead.followupDate > todayStr) {
+    const d = new Date(lead.followupDate);
+    const dateFormatted = d.toLocaleDateString("en-IN", { day: "numeric", month: "short" });
+    return { status: "UPCOMING", label: `📅 Follow-up: ${dateFormatted}` };
+  } else {
+    return { status: "OVERDUE", label: `⚠️ Overdue: ${diffDays} day${diffDays > 1 ? "s" : ""} ago` };
+  }
+}
+
+export function isFollowupDue(lead) {
+  const c = getFollowupClassification(lead);
+  return c.status === "DUE_TODAY";
+}
+
+export function isFollowupOverdue(lead) {
+  const c = getFollowupClassification(lead);
+  return c.status === "OVERDUE";
 }
 
 export function updateDashboardStats(allLeads) {
+  const totalLeads = allLeads.length;
   const activeLeads = allLeads.filter(
-    l => l.status !== "CONVERTED" && l.status !== "LOST"
+    l => l.status !== "WON" && l.status !== "CONVERTED" && l.status !== "LOST"
   );
 
-  const hotCount = activeLeads.filter(l => l.priority === "HOT").length;
-  const warmCount = activeLeads.filter(l => l.priority === "WARM").length;
-  const watchCount = activeLeads.filter(l => l.priority === "WATCH").length;
   const dueCount = activeLeads.filter(isFollowupDue).length;
+  const overdueCount = activeLeads.filter(isFollowupOverdue).length;
+  const wonCount = allLeads.filter(l => l.status === "WON" || l.status === "CONVERTED").length;
+  const lostCount = allLeads.filter(l => l.status === "LOST").length;
 
   const totalGuards = activeLeads.reduce(
     (sum, l) => sum + (parseInt(l.guardsRequired, 10) || 0),
     0
   );
 
+  if (elements.totalLeadsCount) elements.totalLeadsCount.textContent = totalLeads;
   if (elements.activeCount) elements.activeCount.textContent = activeLeads.length;
-  if (elements.hotCount) elements.hotCount.textContent = hotCount;
-  if (elements.warmCount) elements.warmCount.textContent = warmCount;
-  if (elements.watchCount) elements.watchCount.textContent = watchCount;
   if (elements.dueCount) elements.dueCount.textContent = dueCount;
+  if (elements.overdueCount) elements.overdueCount.textContent = overdueCount;
+  if (elements.wonCount) elements.wonCount.textContent = wonCount;
+  if (elements.lostCount) elements.lostCount.textContent = lostCount;
   if (elements.guardsCount) elements.guardsCount.textContent = totalGuards;
 }
 
@@ -619,12 +659,14 @@ export function renderLeadsList(leads, { onEdit, onDelete, onFollowup, onViewDet
 
     // Follow-up Banner
     let followupBanner = null;
-    if (lead.followupDate) {
+    const classification = getFollowupClassification(lead);
+    if (classification.status !== "NONE") {
       followupBanner = document.createElement("div");
-      const due = isFollowupDue(lead);
-      followupBanner.className = `lead-followup-banner ${due ? "followup-due" : "followup-upcoming"}`;
+      const isDue = classification.status === "DUE_TODAY";
+      const isOver = classification.status === "OVERDUE";
+      followupBanner.className = `lead-followup-banner ${isOver || isDue ? "followup-due" : "followup-upcoming"}`;
       followupBanner.innerHTML = `
-        <span>${due ? "⚠️ Follow-up Overdue / Due" : "📅 Next Follow-up"}</span>
+        <span>${classification.label}</span>
         <span>${lead.followupDate}</span>
       `;
     }

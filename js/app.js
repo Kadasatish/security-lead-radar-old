@@ -409,7 +409,7 @@ function applyFiltersAndRender() {
 
   // Due Only filter
   if (filterState.dueOnly) {
-    filtered = filtered.filter(isFollowupDue);
+    filtered = filtered.filter(l => l.followupDate && (l.status !== "WON" && l.status !== "CONVERTED" && l.status !== "LOST"));
   }
 
   renderLeadsList(filtered, {
@@ -662,13 +662,15 @@ elements.saveFollowupButton.addEventListener("click", async () => {
   setFollowupFormError("");
   const leadId = elements.followupModal.dataset.leadId;
   const status = elements.followupStatusSelect.value;
+  const followupDate = elements.followupDateInput ? elements.followupDateInput.value : "";
+  const followupTime = elements.followupTimeInput ? elements.followupTimeInput.value : "";
   const nextDate = elements.followupNextDateInput.value;
   const note = elements.followupNoteInput.value.trim();
 
   if (!leadId) return;
 
   if (!note && !nextDate) {
-    setFollowupFormError("Please enter a follow-up note or next due date.");
+    setFollowupFormError("Please enter a follow-up note or schedule next follow-up date.");
     return;
   }
 
@@ -676,12 +678,12 @@ elements.saveFollowupButton.addEventListener("click", async () => {
   elements.saveFollowupButton.textContent = "Saving...";
 
   try {
-    await recordFollowup(leadId, { note, nextDate, status });
-    setAppMessage("Follow-up logged successfully.");
+    await recordFollowup(leadId, { note, nextDate, followupDate, followupTime, status });
+    setAppMessage("Follow-up saved successfully.");
     closeFollowupModal();
   } catch (error) {
     console.error("Record followup error:", error);
-    setFollowupFormError("Could not log follow-up.");
+    setFollowupFormError("Could not log follow-up. Check network.");
   } finally {
     elements.saveFollowupButton.disabled = false;
     elements.saveFollowupButton.textContent = "Save Record";
