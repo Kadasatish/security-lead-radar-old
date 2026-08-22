@@ -216,12 +216,12 @@ export function openLeadModal(lead = null) {
     elements.leadLocationInput.value = lead.location || "";
     elements.leadContactPersonInput.value = lead.contactPerson || "";
     elements.leadPhoneInput.value = lead.phone || "";
-    elements.leadGuardsRequiredInput.value = lead.guardsRequired || 1;
-    elements.leadShiftSelect.value = lead.shift || "Both";
-    elements.leadRequirementTypeSelect.value = lead.requirementType || "Static Guarding";
+    elements.leadGuardsRequiredInput.value = lead.guardsRequired !== undefined && lead.guardsRequired !== null ? lead.guardsRequired : "";
+    elements.leadShiftSelect.value = lead.shift || "";
+    elements.leadRequirementTypeSelect.value = lead.requirementType || "";
     elements.leadStartDateInput.value = lead.startDate || "";
-    elements.leadPrioritySelect.value = lead.priority || "HOT";
-    elements.leadStatusSelect.value = lead.status || "NEW";
+    elements.leadPrioritySelect.value = lead.priority || "";
+    elements.leadStatusSelect.value = lead.status || "";
     elements.leadFollowupDateInput.value = lead.followupDate || "";
     elements.leadNotesInput.value = lead.notes || "";
     elements.leadModal.dataset.editId = lead.id;
@@ -242,12 +242,12 @@ export function resetLeadModalForm() {
   if (elements.leadLocationInput) elements.leadLocationInput.value = "";
   if (elements.leadContactPersonInput) elements.leadContactPersonInput.value = "";
   if (elements.leadPhoneInput) elements.leadPhoneInput.value = "";
-  if (elements.leadGuardsRequiredInput) elements.leadGuardsRequiredInput.value = 1;
-  if (elements.leadShiftSelect) elements.leadShiftSelect.value = "Both";
-  if (elements.leadRequirementTypeSelect) elements.leadRequirementTypeSelect.value = "Static Guarding";
+  if (elements.leadGuardsRequiredInput) elements.leadGuardsRequiredInput.value = "";
+  if (elements.leadShiftSelect) elements.leadShiftSelect.value = "";
+  if (elements.leadRequirementTypeSelect) elements.leadRequirementTypeSelect.value = "";
   if (elements.leadStartDateInput) elements.leadStartDateInput.value = "";
-  if (elements.leadPrioritySelect) elements.leadPrioritySelect.value = "HOT";
-  if (elements.leadStatusSelect) elements.leadStatusSelect.value = "NEW";
+  if (elements.leadPrioritySelect) elements.leadPrioritySelect.value = "";
+  if (elements.leadStatusSelect) elements.leadStatusSelect.value = "";
   if (elements.leadFollowupDateInput) elements.leadFollowupDateInput.value = "";
   if (elements.leadNotesInput) elements.leadNotesInput.value = "";
   if (elements.leadModal && elements.leadModal.dataset) {

@@ -376,7 +376,8 @@ elements.saveLeadButton.addEventListener("click", async () => {
   const location = elements.leadLocationInput.value.trim();
   const contactPerson = elements.leadContactPersonInput.value.trim();
   const phone = elements.leadPhoneInput.value.trim();
-  const guardsRequired = parseInt(elements.leadGuardsRequiredInput.value, 10) || 1;
+  const guardsRaw = elements.leadGuardsRequiredInput.value.trim();
+  const guardsRequired = guardsRaw ? parseInt(guardsRaw, 10) : null;
   const shift = elements.leadShiftSelect.value;
   const requirementType = elements.leadRequirementTypeSelect.value;
   const startDate = elements.leadStartDateInput.value;
@@ -394,6 +395,36 @@ elements.saveLeadButton.addEventListener("click", async () => {
   if (!location) {
     setLeadFormError("Location is required.");
     elements.leadLocationInput.focus();
+    return;
+  }
+
+  if (!guardsRaw || isNaN(guardsRequired) || guardsRequired < 1) {
+    setLeadFormError("Guards Required is required and must be at least 1.");
+    elements.leadGuardsRequiredInput.focus();
+    return;
+  }
+
+  if (!shift) {
+    setLeadFormError("Shift Requirement is required.");
+    elements.leadShiftSelect.focus();
+    return;
+  }
+
+  if (!requirementType) {
+    setLeadFormError("Requirement Type is required.");
+    elements.leadRequirementTypeSelect.focus();
+    return;
+  }
+
+  if (!priority) {
+    setLeadFormError("Priority selection is required.");
+    elements.leadPrioritySelect.focus();
+    return;
+  }
+
+  if (!status) {
+    setLeadFormError("Status selection is required.");
+    elements.leadStatusSelect.focus();
     return;
   }
 

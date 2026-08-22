@@ -262,22 +262,24 @@
 
         <div class="input-group">
           <label class="input-label">Guards Required</label>
-          <input id="leadGuardsRequired" class="input" type="number" min="1" value="1">
+          <input id="leadGuardsRequired" class="input" type="number" min="1" placeholder="e.g. 1">
         </div>
 
         <div class="input-group">
           <label class="input-label">Shift Requirement</label>
           <select id="leadShift" class="input">
+            <option value="" disabled selected>Select Shift Requirement</option>
             <option value="Day">Day Shift (12h)</option>
             <option value="Night">Night Shift (12h)</option>
-            <option value="Both" selected>Both / 24 Hours</option>
+            <option value="Both">Both / 24 Hours</option>
           </select>
         </div>
 
         <div class="input-group">
           <label class="input-label">Requirement Type</label>
           <select id="leadRequirementType" class="input">
-            <option value="Static Guarding" selected>Static Guarding</option>
+            <option value="" disabled selected>Select Requirement Type</option>
+            <option value="Static Guarding">Static Guarding</option>
             <option value="Event Security">Event Security</option>
             <option value="Bouncer / VIP">Bouncer / VIP</option>
             <option value="Supervisor">Supervisor</option>
@@ -298,7 +300,8 @@
         <div class="input-group">
           <label class="input-label">Priority</label>
           <select id="leadPriority" class="input">
-            <option value="HOT" selected>🔥 HOT</option>
+            <option value="" disabled selected>Select Priority</option>
+            <option value="HOT">🔥 HOT</option>
             <option value="WARM">🟡 WARM</option>
             <option value="WATCH">⚪ WATCH</option>
           </select>
@@ -307,7 +310,8 @@
         <div class="input-group">
           <label class="input-label">Status</label>
           <select id="leadStatus" class="input">
-            <option value="NEW" selected>NEW</option>
+            <option value="" disabled selected>Select Status</option>
+            <option value="NEW">NEW</option>
             <option value="CONTACTED">CONTACTED</option>
             <option value="FOLLOW_UP">FOLLOW_UP</option>
             <option value="INTERESTED">INTERESTED</option>
