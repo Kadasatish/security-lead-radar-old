@@ -147,14 +147,14 @@ if (elements.saveProfileButton) {
     elements.saveProfileButton.textContent = "Saving...";
 
     try {
-      await saveUserProfile(currentUser.uid, { companyName });
+      await saveUserProfile(currentUser.uid, { companyName, email: currentUser.email || "" });
       currentProfile = { companyName };
       setCustomerGreeting(companyName);
       setAppMessage("Profile updated successfully.");
       closeProfileModal();
     } catch (error) {
       console.error("Save profile error:", error);
-      setProfileFormError("Could not save profile.");
+      setProfileFormError(error.message || "Could not save profile.");
     } finally {
       elements.saveProfileButton.disabled = false;
       elements.saveProfileButton.textContent = "Save Profile";

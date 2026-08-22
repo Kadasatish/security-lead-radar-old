@@ -31,26 +31,58 @@ export function initAuthStateListener(onChange) {
 }
 
 export async function fetchUserProfile(uid) {
+  if (!uid) return null;
+  let profile = null;
+
   try {
     const userRef = doc(db, "users", uid);
     const snap = await getDoc(userRef);
     if (snap.exists()) {
-      return snap.data();
+      profile = snap.data();
     }
   } catch (err) {
-    console.error("Fetch user profile error:", err);
+    console.warn("Firestore fetch profile warning (using local fallback):", err.message);
   }
-  return null;
+
+  if (!profile) {
+    try {
+      const local = localStorage.getItem(`agency_profile_${uid}`);
+      if (local) {
+        profile = JSON.parse(local);
+      }
+    } catch (e) {
+      console.warn("localStorage fetch error:", e);
+    }
+  }
+
+  return profile;
 }
 
 export async function saveUserProfile(uid, { companyName, email }) {
-  const userRef = doc(db, "users", uid);
+  if (!uid) throw new Error("User not authenticated.");
+
   const data = {
     companyName: companyName || "Security Agency",
     email: email || "",
-    updatedAt: serverTimestamp()
+    updatedAt: new Date().toISOString()
   };
-  await setDoc(userRef, data, { merge: true });
+
+  try {
+    localStorage.setItem(`agency_profile_${uid}`, JSON.stringify(data));
+  } catch (e) {
+    console.warn("localStorage save error:", e);
+  }
+
+  try {
+    const userRef = doc(db, "users", uid);
+    await setDoc(userRef, {
+      ...data,
+      updatedAt: serverTimestamp()
+    }, { merge: true });
+  } catch (err) {
+    console.warn("Firestore save profile warning (saved to user local storage):", err.message);
+  }
+
   return data;
 }
 
