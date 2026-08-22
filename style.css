@@ -87,6 +87,17 @@ button:active {
   transform: scale(0.98);
 }
 
+.network-status-banner {
+  background: var(--accent-warm);
+  color: var(--bg-primary);
+  text-align: center;
+  font-size: 13px;
+  font-weight: 700;
+  padding: 6px 12px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.2);
+  transition: all 0.3s ease;
+}
+
 .hidden {
   display: none !important;
 }

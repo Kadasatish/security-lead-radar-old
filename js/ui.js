@@ -41,7 +41,8 @@ export const elements = {
   saveProfileButton: document.getElementById("saveProfileButton"),
   closeSupportButton: document.getElementById("closeSupportButton"),
 
-  // Container
+  // Container & Banners
+  networkStatusBanner: document.getElementById("networkStatusBanner"),
   leadsContainer: document.getElementById("leadsContainer"),
 
   // Stats Counters

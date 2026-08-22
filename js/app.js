@@ -77,6 +77,23 @@ let filterState = {
 };
 
 /* =========================
+   NETWORK ONLINE/OFFLINE HANDLER
+========================== */
+function updateNetworkStatus() {
+  if (elements.networkStatusBanner) {
+    if (navigator.onLine) {
+      elements.networkStatusBanner.classList.add("hidden");
+    } else {
+      elements.networkStatusBanner.classList.remove("hidden");
+    }
+  }
+}
+
+window.addEventListener("online", updateNetworkStatus);
+window.addEventListener("offline", updateNetworkStatus);
+updateNetworkStatus();
+
+/* =========================
    INITIALIZATION
 ========================== */
 initTheme();

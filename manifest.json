@@ -1,7 +1,7 @@
 {
-  "name": "Security Lead Radar - Kakinada",
-  "short_name": "Lead Radar",
-  "description": "Security service lead intelligence platform for Kakinada",
+  "name": "Satish Security Lead Radar",
+  "short_name": "Security Lead Radar",
+  "description": "Kakinada Security Lead Intelligence Platform",
   "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",
