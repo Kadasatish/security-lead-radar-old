@@ -1,5 +1,16 @@
+# Dependencies
 node_modules/
-*.png
-!icons/*.png
+
+# Environment
+.env
+.env.local
+
+# Build & Cache
+.cache/
+.pytest_cache/
+test-results/
 *.log
-verify_phase3b.js
+
+# Icons exceptions
+!icons/icon-192.png
+!icons/icon-512.png
